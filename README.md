@@ -1,4 +1,6 @@
-# micro:bit MicroPython Cookbook - Tricks and Experiments
+# micro:bit MicroPython Cookbook (Updating)
+
+A note for some Python tricks and experiments on BBC micro:bit.
 
 ## Easer Eggs
 
@@ -25,6 +27,8 @@ Also, how micro:bit get its own version of MicroPython anyway: [The Story of Mic
 
 ## Fill LED Display
 
+Light up every LEDs. Use fillScreen() as default.
+
 ```python
 from microbit import display, Image, sleep
 
@@ -46,7 +50,7 @@ while True:
 
 ## A More Convenient Pin Class
 
-Using **namedtuple** to "rename" pin methods.
+Use **namedtuple** to "rename" pin methods as set() and get().
 
 ```python
 from microbit import pin0, sleep
@@ -67,10 +71,8 @@ while True:
 
 ## LED Bar Graph
 
-Not perfect. A bit slow. Interference with microbit.display.read_light_level().
-
 ```python
-from microbit import display
+from microbit import display, sleep
 
 def plotBarGraph(value, maxValue, brightness = 9):
     bar = value / maxValue
@@ -88,9 +90,12 @@ def plotBarGraph(value, maxValue, brightness = 9):
 
 
 while True:
-    for i in range(255):
-        plotBarGraph(i, 255, 9)
+    lightLevel = display.read_light_level()
+    plotBarGraph(lightLevel, 255, 9) # or plotBarGraph(lightLevel, 255)
+    sleep(50)
 ```
+
+Since read_light_level() uses LEDs themselves as light sensors (see [this video](https://www.youtube.com/watch?v=TKhCr-dQMBY)), a short delay is added, but the LED screen would flicker a bit.
 
 ## Servo Control
 
@@ -110,6 +115,21 @@ while True:
     servoWrite(servoPin, 180)
     sleep(1000)
 ```
+
+Do not use servos and buzzers at the same time. They require different PWM frequencies and would most microcontrollers can only set one frequency accross all pins at a time. Also micro
+
+## Value Mapping
+
+Translate a value in a range to its corresponding value in anoher range. Borrowed from [here](https://stackoverflow.com/questions/1969240/mapping-a-range-of-values-to-another).
+
+```python
+def translate(value, leftMin, leftMax, rightMin, rightMax):
+    leftSpan = leftMax - leftMin
+    rightSpan = rightMax - rightMin
+    valueScaled = float(value - leftMin) / float(leftSpan)
+    return rightMin + (valueScaled * rightSpan)
+```
+
 ## Get Pitch and Roll Degrees
 
 These function cannot tell if the board is facing up or down. Probably need to use accelerometer.get_z() for that.
@@ -135,7 +155,7 @@ while True:
     print("Pitch:", rotationPitch(), " / roll:", rotationRoll())
     sleep(100)
 ```
-## Rainbow NeoPixel
+## NeoPixel Rainbow/Rotation
 
 This code needs at least 3 LEDs in the NeoPixel chain.
 
