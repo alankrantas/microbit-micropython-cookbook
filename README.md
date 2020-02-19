@@ -63,9 +63,9 @@ setPin = lambda p: Pin(p.write_digital, p.read_digital)
 led = setPin(pin0)
 
 while True:
-    print(led.set(1))
+    led.set(1)
     sleep(500)
-    print(led.set(0))
+    led.set(0)
     sleep(500)
 ```
 
