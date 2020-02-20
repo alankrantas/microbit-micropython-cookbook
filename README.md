@@ -27,9 +27,9 @@ The following code
 from microbit import *
 ```
 
-is a bad idea. This way imports everything of the microbit module even you don't need many of the features.
+is a bad idea. This way imports everything of the microbit module even you don't need many of the features and wastes extra memory.
 
-Instead, you should only import sub-modules you actually use:
+Instead, you should only import sub-modules you are going to use:
 
 ```python
 from microbit import pin0, display, sleep
