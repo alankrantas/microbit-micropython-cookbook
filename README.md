@@ -256,7 +256,7 @@ def showRainbow():
             if abs(i - index[j]) <= int(led_num / 3):
                 color[j] = led_maxlevel - abs(i - index[j]) * change_amount
                 if color[j] < 0:
-                    color[j]
+                    color[j] = 0
         if i >= int(led_num / 3 * 2):
             color[0] = led_maxlevel - (led_num - i) * change_amount
             if color[0] < 0:
