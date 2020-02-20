@@ -148,10 +148,12 @@ while True:
 
 ## LED Bar Graph
 
+A 25-level LED progress bar.
+
 ```python
 from microbit import display, sleep
 
-def plotBarGraph(value, maxValue, brightness = 9):
+def plotBarGraph(value, maxValue, brightness=9):
     bar = value / maxValue
     valueArray = ((0.96, 0.88, 0.84, 0.92, 1.00), 
                   (0.76, 0.68, 0.64, 0.72, 0.80),
@@ -160,19 +162,17 @@ def plotBarGraph(value, maxValue, brightness = 9):
                   (0.16, 0.08, 0.04, 0.12, 0.20))
     for y in range(5):
         for x in range(5):
-            if bar >= valueArray[y][x]:
-                display.set_pixel(x, y, brightness)
-            else:
-                display.set_pixel(x, y, 0)
+            display.set_pixel(x, y, 
+                brightness if bar >= valueArray[y][x] else 0)
 
 
 while True:
     lightLevel = display.read_light_level()
-    plotBarGraph(lightLevel, 255, 9) # or plotBarGraph(lightLevel, 255)
+    plotBarGraph(lightLevel, 255) # or plotBarGraph(lightLevel, 255, 9)
     sleep(50)
 ```
 
-Since read_light_level() uses LEDs themselves as light sensors (see [this video](https://www.youtube.com/watch?v=TKhCr-dQMBY)), a short delay is added, but the LED screen would flicker a bit.
+Since read_light_level() uses LEDs themselves as light sensors (see [this video](https://www.youtube.com/watch?v=TKhCr-dQMBY)), in this example a short delay is added, but the LED screen would still flicker a bit.
 
 ## Servo Control
 
