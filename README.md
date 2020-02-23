@@ -234,7 +234,7 @@ while True:
 ```
 ## NeoPixel Rainbow/Rotation
 
-This code needs at least 3 LEDs in the NeoPixel chain.
+This code needs at least 3 LEDs in the NeoPixel chain. Of course, you can set a number (much) higher than actual LEDs to get smooth rainbow effects.
 
 ```python
 from microbit import pin0, sleep
