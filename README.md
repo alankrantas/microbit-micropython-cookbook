@@ -249,22 +249,22 @@ np = NeoPixel(led_pin, led_num)
 
 def showRainbow():
     change_amount = int(led_maxlevel / (led_num / 3))
-    index = [0, int(led_num / 3), int(led_num / 3 * 2)]
+    index = (0, int(led_num / 3), int(led_num / 3 * 2))
     for i in range(led_num):
         color = [0, 0, 0]
         for j in range(3):
-            if abs(i - index[j]) <= int(led_num / 3):
+            if abs(i - index[j]) <= index[1]:
                 color[j] = led_maxlevel - abs(i - index[j]) * change_amount
                 if color[j] < 0:
                     color[j] = 0
-        if i >= int(led_num / 3 * 2):
+        if i >= index[2]:
             color[0] = led_maxlevel - (led_num - i) * change_amount
             if color[0] < 0:
                 color[0] = 0
-        np[i] = (color[0], color[1], color[2])
+        np[i] = tuple(color)
     np.show()
 
-def rotate():
+def ledRotate():
     tmp = np[led_num - 1]
     for i in reversed(range(1, led_num)): # clockwise
         np[i] = np[i - 1]
@@ -275,7 +275,6 @@ def rotate():
 showRainbow()
 
 while True:
-    rotate()
+    ledRotate()
     sleep(50)
-
 ```
