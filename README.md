@@ -92,7 +92,7 @@ from microbit import pin0, pin2, sleep
 
 class Pin:
     
-    __slot__ = ["pin"]
+    __slots__ = ["pin"]
     
     def __init__(self, pin):
         self.pin = pin
