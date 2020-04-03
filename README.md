@@ -215,7 +215,9 @@ while True:
     sleep(1000)
 ```
 
-Do not use servos and buzzers at the same time. They require different PWM frequencies and would most microcontrollers can only set one frequency accross all pins at a time. Also micro
+Do not use servos and buzzers at the same time. They require different PWM frequencies and most microcontrollers can only set one frequency accross all pins at a time.
+
+micro:bit's power output may just enough to power a SG90 mini servo. External power supply is recommended.
 
 ## Value Mapping
 
