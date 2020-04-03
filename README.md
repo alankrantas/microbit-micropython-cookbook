@@ -4,7 +4,7 @@
 
 [BBC micro:bit MicroPython documentation](https://microbit-micropython.readthedocs.io/en/latest/index.html#)
 
-This is my notes, tricks and experiments about BBC micro:bit and MicroPython.
+This is the collection of my notes, tricks and experiments about BBC micro:bit and MicroPython.
 
 ## Easer Eggs
 
@@ -217,7 +217,7 @@ while True:
 
 Do not use servos and buzzers at the same time. They require different PWM frequencies and most microcontrollers can only set one frequency accross all pins at a time.
 
-micro:bit's power output may just enough to power a SG90 mini servo. External power supply is recommended.
+Also: micro:bit's power output may just (barely) enough to power a single SG90 mini servo. External power supply recommended.
 
 ## Value Mapping
 
@@ -301,4 +301,47 @@ showRainbow()
 while True:
     ledRotate()
     sleep(50)
+```
+
+## HC-SR04 Ultrasonic Sensor
+
+Get detected distance from HC-SR04/HC-SR04P sonar sensors. Set the parameter unit to 'cm' or 'inch'. External power supply recommended.
+
+```python
+from machine import time_pulse_us
+from utime import sleep_us
+from microbit import pin1, pin2, display, Image, sleep
+
+def sonar(trig_pin, echo_pin, unit='cm'):
+    
+    trig_pin.write_digital(0)
+    sleep_us(2)
+    trig_pin.write_digital(1)
+    sleep_us(10)
+    trig_pin.write_digital(0)
+    
+    while echo_pin.read_digital() == 0:
+        pass
+    
+    duration = time_pulse_us(echo_pin, 1, 30000)
+    
+    if unit == 'cm':
+        return duration / 2.0 * 0.03313
+    elif unit == 'inch':
+        return duration / 2.0 * 0.01304
+    else:
+        return duration
+
+
+while True:
+    
+    distance = sonar(trig_pin=pin1, echo_pin=pin2, unit='cm')
+    print(distance)
+    
+    if 2 <= distance <= 20:
+        display.show(Image.YES)
+    else:
+        display.clear()
+    
+    sleep(100)
 ```
