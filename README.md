@@ -76,6 +76,18 @@ gc.enable() # auto memory recycle
 gc.collect() # force memory recycle
 ```
 
+## Classic Blinky
+
+```python
+from microbit import display, sleep
+
+while True:
+    display.set_pixel(0, 0, 9)
+    sleep(1000)
+    display.set_pixel(0, 0, 0)
+    sleep(1000)
+```
+
 ## Fill LED Display
 
 Light up every LEDs. Use fillScreen() as default.
@@ -166,6 +178,46 @@ button = setPin(pin2, pull_up=True)
 while True:
     led.set(not button.get())
     sleep(50)
+```
+
+## LED Blinky Without Using Sleep
+
+```python
+from microbit import display
+import utime
+
+delay = 1000
+since = utime.ticks_ms()
+
+while True:
+    
+    now = utime.ticks_ms()
+    
+    if utime.ticks_diff(now, since) >= delay:
+        display.set_pixel(0, 0, 9 if display.get_pixel(0, 0) == 0 else 0)
+        since = utime.ticks_ms()
+```
+
+This method would be useful if you want to do something at different intervals:
+
+```python
+from microbit import display
+import utime
+
+delay1, delay2 = 1000, 300
+since1, since2 = utime.ticks_ms(), utime.ticks_ms()
+
+while True:
+    
+    now = utime.ticks_ms()
+    
+    if utime.ticks_diff(now, since1) >= delay1:
+        display.set_pixel(0, 0, 9 if display.get_pixel(0, 0) == 0 else 0)
+        since1 = utime.ticks_ms()
+    
+    if utime.ticks_diff(now, since2) >= delay2:
+        display.set_pixel(4, 4, 9 if display.get_pixel(4, 4) == 0 else 0)
+        since2 = utime.ticks_ms()
 ```
 
 ## LED Bar Graph
@@ -346,7 +398,7 @@ while True:
     sleep(100)
 ```
 
-## Calcualte Fibonacci sequence
+## Calcualte Fibonacci Sequence
 
 ```python
 from microbit import display
@@ -362,7 +414,9 @@ print(b)
 display.scroll(b)
 ```
 
-## Calcuate a list of prime numbers
+## Calcuate a List of Prime Numbers
+
+Prime numbers (except 2, 3) are either 6n - 1 or 6n + 1.
 
 ```python
 from microbit import display
@@ -383,4 +437,75 @@ for p in range(6, limit + 1, 6):
 print(primes)
 for prime in primes:
     display.scroll(prime)
+```
+
+## Conway's Game of Life on 5x5 LED Display
+
+The code would reset the micro:bit if there's no cell left or the cells are stable.
+
+```python
+from microbit import display
+from machine import reset
+from random import randint
+
+Born = '3'
+Sustain = '23'
+
+matrix = [bytearray((1 if randint(0, 2) == 0 else 0) 
+            for _ in range(5)) for _ in range(5)]
+
+def display_matrix():
+    for i in range(5):
+        for j in range(5):
+            display.set_pixel(i, j, 9 if matrix[i][j] else 0)
+
+def calculate_next_gen():
+    global matrix
+    matrix_buf = [bytearray(0 for _ in range(5)) for _ in range(5)]
+    for i in range(5):
+        for j in range(5):
+            cell_num = 0
+            for k in range(3):
+                for l in range(3):
+                    x = i + k - 1
+                    y = j + l - 1
+                    if x < 0:
+                        x = 5 - 1
+                    elif x >= 5:
+                        x = 0 
+                    if y < 0:
+                        y = 5 - 1
+                    elif y >= 5:
+                        y = 0   
+                    if matrix[x][y]:
+                        cell_num += 1
+            if not matrix[i][j]:
+                matrix_buf[i][j] = 1 if str(cell_num) in Born else 0
+            else:
+                cell_num -= 1
+                matrix_buf[i][j] = 1 if str(cell_num) in Sustain else 0
+    matrix = matrix_buf
+
+generation = 0
+cell_count = 0
+prev_cell_count = 0
+cell_repeat = 0
+
+while True:
+    
+    calculate_next_gen()
+    cell_count = sum(map(sum, matrix))
+    print(cell_count, 'cell(s)')
+    display_matrix()
+    
+    if prev_cell_count == cell_count:
+        cell_repeat += 1
+    else:
+        cell_repeat = 0
+    prev_cell_count = cell_count
+    
+    if cell_count == 0 or cell_repeat >= 7:
+        print('Resetting...')
+        print('')
+        reset()
 ```
