@@ -345,3 +345,42 @@ while True:
     
     sleep(100)
 ```
+
+## Calcualte Fibonacci sequence
+
+```python
+from microbit import display
+
+Fibonacci_num = 42
+a = 0
+b = 1
+
+for i in range(Fibonacci_num - 2):
+    a, b = b, a + b
+
+print(b)
+display.scroll(b)
+```
+
+## Calcuate a list of prime numbers
+
+```python
+from microbit import display
+
+limit = 50
+primes = [2, 3]
+
+for p in range(6, limit + 1, 6):
+    for p_test in range(p - 1, p + 2, 2):
+        p_test_is_prime = True
+        for prime in primes:
+            if p_test % prime == 0:
+                p_test_is_prime = False
+                break
+        if p_test_is_prime:
+            primes.append(p_test)
+
+print(primes)
+for prime in primes:
+    display.scroll(prime)
+```
