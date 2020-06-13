@@ -76,6 +76,10 @@ gc.enable() # auto memory recycle
 gc.collect() # force memory recycle
 ```
 
+## Recursion is Not Welcomed
+
+Since micro:bit has very limited memory, the recursion depth is severely limited. Only [8 nested function calls or so](https://mail.python.org/pipermail/microbit/2016-February/000896.html) can be used without triggering RuntimeError. 
+
 ## Classic Blinky
 
 ```python
@@ -180,7 +184,7 @@ while True:
     sleep(50)
 ```
 
-## LED Blinky Without Using Sleep
+## Blinky Without Using Sleep
 
 ```python
 from microbit import display
