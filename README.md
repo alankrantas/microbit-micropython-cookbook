@@ -2,7 +2,7 @@
 
 ![1](https://user-images.githubusercontent.com/44191076/79871966-c0ae8b00-8417-11ea-8255-cbc681d12b8d.jpg)
 
-[BBC micro:bit MicroPython documentation](https://microbit-micropython.readthedocs.io/en/latest/index.html#)
+See also [BBC micro:bit MicroPython documentation](https://microbit-micropython.readthedocs.io/en/latest/index.html#)
 
 This is the collection of my notes, tricks and experiments on BBC micro:bit and MicroPython.
 
@@ -61,7 +61,9 @@ Personally, I would perfer [Mu editor](https://codewith.mu/) for any beginners. 
 
 If you have experiences in standard Python or MicroPython with ESP8266/ESP32 (or CircuitPython), you can consider [Thonny](https://thonny.org/) which allows you to access micro:bit's REPL directly without having to switch tabs.
 
-## Why You Shouldn Aviud Import *
+The Python online editor and Thonny allow you to upload your .py file onto your micro:bit. So it may still be possible to write a file bigger than 8KB. You can upload third party drivers by this way, although the micro:bit may not have enough RAM to run them all.
+
+## Why You Should Avoid Import *
 
 The following import statement
 
@@ -69,7 +71,7 @@ The following import statement
 from microbit import *
 ```
 
-is a bad idea. This imports everything from the big microbit module even you don't need many of the features and thus waste memory.
+is not really a good idea. This imports everything from the big **microbit** module even you don't need many of the features and thus waste memory.
 
 Instead, you should import the only submodules you are going to use:
 
@@ -96,7 +98,7 @@ gc.collect() # force memory recycle
 
 ## Recursion is Not Welcomed
 
-Recursion depth (how many level can a function calls itself) is severely limited because of the memory constraint. Only [8 nested function calls or so](https://mail.python.org/pipermail/microbit/2016-February/000896.html) can be used without triggering RuntimeError. So sadly it's not possible to do some popular algorithms on micro:bit.
+Recursion depth (how many level can a function calls itself) is severely limited because of the memory constraint. Only [8 nested function calls or so](https://mail.python.org/pipermail/microbit/2016-February/000896.html) can be used without triggering RuntimeError. So sadly it's not possible to write some popular algorithms on micro:bit.
 
 ## Classic Blinky
 
@@ -284,11 +286,19 @@ while True:
 Translate a value in a range to its corresponding value in anoher range. Borrowed from [here](https://stackoverflow.com/questions/1969240/mapping-a-range-of-values-to-another).
 
 ```python
+from microbit import display, sleep
+
 def translate(value, leftMin, leftMax, rightMin, rightMax):
     leftSpan = leftMax - leftMin
     rightSpan = rightMax - rightMin
     valueScaled = float(value - leftMin) / float(leftSpan)
     return rightMin + (valueScaled * rightSpan)
+
+
+while True:
+    lightLevel = display.read_light_level()
+    print(translate(lightLevel, 0, 255, 0, 1023))
+    sleep(100)
 ```
 
 ## Servo Control
@@ -477,8 +487,6 @@ for prime in primes:
 
 ## Conway's Game of Life on 5x5 LED Display
 
-The code would reset the micro:bit if there's no cell left or the cells are stable. Although sometimes it may be locked into a state with the same alternating cell numbers and need manual reset.
-
 ```python
 from microbit import display
 from machine import reset
@@ -547,6 +555,8 @@ while True:
         print('')
         reset()
 ```
+
+The code would reset the micro:bit if there's no cell left or the cells are stable. Although sometimes it may be locked into a state with the same alternating cell numbers and need manual reset.
 
 ## Morse Code Machine
 
