@@ -4,7 +4,7 @@
 
 [BBC micro:bit MicroPython documentation](https://microbit-micropython.readthedocs.io/en/latest/index.html#)
 
-This is the collection of my notes, tricks and experiments about BBC micro:bit and MicroPython.
+This is the collection of my notes, tricks and experiments on BBC micro:bit and MicroPython.
 
 ## Easer Eggs
 
@@ -18,20 +18,28 @@ import antigravity
 
 The result from <b>import this</b> is a version of [Zen of Python](https://www.python.org/dev/peps/pep-0020/) and <b>import antigravity</b> is from [original Python easter egg](https://xkcd.com/353/).
 
-Also you can try
+Also you can try (also in REPL)
 
 ```python
 this.authors()
 love.badaboom()
 ```
 
-## Editor of Choice
+## A Little Help
 
-The official [Python online editor](https://python.microbit.org/v/2.0) does not need installation and can be used anywhere with Internet and Chrome web browser. Support Web-USB. It's ok to use, really.
+Display all modules in REPL:
 
-Personally, I would perfer [Mu editor](https://codewith.mu/) for any beginners. It has code check, (limited) auto-complete and can automatically detect/upload code to your micro:bit.
+```python
+help('modules')
+```
 
-If you have experiences with MicroPython with ESP8266/ESP32 or CircuitPython, you can consider [Thonny](https://thonny.org/) which allows you to access micro:bit's REPL directly without having to upload hex file.
+And in REPL you can import a module and check out what it is and what's in there:
+
+```python
+import microbit
+help(microbit)
+dir(microbit)
+```
 
 ## Some Lesser Known Facts
 
@@ -80,6 +88,14 @@ gc.enable() # auto memory recycle
 gc.collect() # force memory recycle
 ```
 
+## Editor of Choice
+
+The official [Python online editor](https://python.microbit.org/v/2.0) does not need installation and can be used anywhere with Internet and Chrome web browser. Support Web-USB. It's ok to use, really.
+
+Personally, I would perfer [Mu editor](https://codewith.mu/) for any beginners. It has code check, (limited) auto-complete and can automatically detect/upload code to your micro:bit.
+
+If you have experiences with MicroPython with ESP8266/ESP32 or CircuitPython, you can consider [Thonny](https://thonny.org/) which allows you to access micro:bit's REPL directly without having to upload hex file.
+
 ## Classic Blinky
 
 ```python
@@ -92,28 +108,29 @@ while True:
     sleep(1000)
 ```
 
-## Blinky LEDs Without Using Sleep
+## Roll a Dice
 
-The two LEDs would blink at different intervals.
+You might need to shake it harder to see changes. The gesture detection is not idel in micro:bit's MicroPython.
 
 ```python
-from microbit import display
-import utime
+from microbit import display, Image, accelerometer, sleep
+from random import randint
 
-delay1, delay2 = 1000, 300
-since1, since2 = utime.ticks_ms(), utime.ticks_ms()
+dices = {
+    1: '00000:00000:00900:00000:00000',
+    2: '00900:00000:00000:00000:00900',
+    3: '90000:00000:00900:00000:00009',
+    4: '90009:00000:00000:00000:90009',
+    5: '90009:00000:00900:00000:90009',
+    6: '90009:00000:90009:00000:90009',
+}
 
 while True:
     
-    now = utime.ticks_ms()
-    
-    if utime.ticks_diff(now, since1) >= delay1:
-        display.set_pixel(0, 0, 9 if display.get_pixel(0, 0) == 0 else 0)
-        since1 = utime.ticks_ms()
-    
-    if utime.ticks_diff(now, since2) >= delay2:
-        display.set_pixel(4, 4, 9 if display.get_pixel(4, 4) == 0 else 0)
-        since2 = utime.ticks_ms()
+    if accelerometer.is_gesture('shake'):
+        dice = randint(1, 6)
+        display.show(Image(dices[dice]))
+        sleep(100)
 ```
 
 ## Fill LED Display
@@ -172,6 +189,30 @@ while True:
 ```
 
 Since read_light_level() uses LEDs themselves as light sensors (see [this video](https://www.youtube.com/watch?v=TKhCr-dQMBY)), The LED screen would flicker a bit.
+
+## Blinky LEDs Without Using Sleep
+
+The two LEDs would blink at different intervals.
+
+```python
+from microbit import display
+import utime
+
+delay1, delay2 = 1000, 300
+since1, since2 = utime.ticks_ms(), utime.ticks_ms()
+
+while True:
+    
+    now = utime.ticks_ms()
+    
+    if utime.ticks_diff(now, since1) >= delay1:
+        display.set_pixel(0, 0, 9 if display.get_pixel(0, 0) == 0 else 0)
+        since1 = utime.ticks_ms()
+    
+    if utime.ticks_diff(now, since2) >= delay2:
+        display.set_pixel(4, 4, 9 if display.get_pixel(4, 4) == 0 else 0)
+        since2 = utime.ticks_ms()
+```
 
 ## A More Convenient Pin Class
 
@@ -581,4 +622,46 @@ while True:
     print('Message converted:')
     print(morse_str)
     print('')
+```
+
+## Radio Proximity Sensor
+
+Load the code below to two micro:bits. They will detect each other's radio signal strength and display it as LED bar graph. Can be used as a indoor treasure hunt game.
+
+Due to some reason, the signal strength or RSSI changes very little regardless of transmite power. So I roughly remapped the value to 0-60 so that you can see the changes more clearly.
+
+If there's no signal received the strength data would be set as zero.
+
+```python
+from microbit import display, sleep
+import radio
+
+def plotBarGraph(value, maxValue, brightness=9):
+    bar = value / maxValue
+    valueArray = ((0.96, 0.88, 0.84, 0.92, 1.00), 
+                  (0.76, 0.68, 0.64, 0.72, 0.80),
+                  (0.56, 0.48, 0.44, 0.52, 0.60), 
+                  (0.36, 0.28, 0.24, 0.32, 0.40), 
+                  (0.16, 0.08, 0.04, 0.12, 0.20))
+    for y in range(5):
+        for x in range(5):
+            display.set_pixel(x, y, 
+                brightness if bar >= valueArray[y][x] else 0)
+
+
+radio.config(group=42, power=7)
+radio.on()
+
+while True:
+    
+    radio.send('0')
+    strength = 0.0
+    data = radio.receive_full()
+    
+    if data:
+        strength = data[1] + 255 - 155
+    
+    print('Signal strength:', strength)
+    plotBarGraph(strength, 60)
+    sleep(50)
 ```
