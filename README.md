@@ -100,7 +100,7 @@ Light up every LEDs. Use fillScreen() as default.
 from microbit import display, Image, sleep
 
 def fillScreen(b = 9):
-    f = (str(b) * 5 + ":") * 5
+    f = (str(b) * 5 + ':') * 5
     display.show(Image(f[:len(f)-1]))
 
 
@@ -130,7 +130,7 @@ from microbit import pin0, pin2, sleep
 
 class Pin:
     
-    __slots__ = ["pin"]
+    __slots__ = ['pin']
     
     def __init__(self, pin):
         self.pin = pin
@@ -202,7 +202,7 @@ while True:
         since = utime.ticks_ms()
 ```
 
-This method would be useful if you want to do something at different intervals:
+This method would be useful if you want to do severl things at different intervals:
 
 ```python
 from microbit import display
@@ -291,25 +291,27 @@ def translate(value, leftMin, leftMax, rightMin, rightMax):
 
 These function cannot tell if the board is facing up or down. Probably need to use accelerometer.get_z() for that.
 
+Go to REPL and reset micro:bit to see the output.
+
 ```python
 from microbit import accelerometer, sleep
-import math
+from math import pi, atan2, sqrt
 
 def rotationPitch():
-    return math.atan2(
+    return atan2(
             accelerometer.get_y(), 
-            math.sqrt(accelerometer.get_x() ** 2 + accelerometer.get_z() ** 2)
-            ) * (180 / math.pi)
+            sqrt(accelerometer.get_x() ** 2 + accelerometer.get_z() ** 2)
+            ) * (180 / pi)
 
 def rotationRoll():
-    return math.atan2(
+    return atan2(
             accelerometer.get_x(), 
-            math.sqrt(accelerometer.get_y() ** 2 + accelerometer.get_z() ** 2)
-            ) * (180 / math.pi)
+            sqrt(accelerometer.get_y() ** 2 + accelerometer.get_z() ** 2)
+            ) * (180 / pi)
 
 
 while True:
-    print("Pitch:", rotationPitch(), " / roll:", rotationRoll())
+    print('Pitch:', rotationPitch(), ' / roll:', rotationRoll())
     sleep(100)
 ```
 ## NeoPixel Rainbow/Rotation
@@ -407,7 +409,7 @@ while True:
 ```python
 from microbit import display
 
-Fibonacci_num = 42
+Fibonacci_num = 42 # calculate nth number
 a = 0
 b = 1
 
@@ -425,7 +427,7 @@ Prime numbers (except 2, 3) are either 6n - 1 or 6n + 1.
 ```python
 from microbit import display
 
-limit = 50
+limit = 50 # calculate primes up to 50
 primes = [2, 3]
 
 for p in range(6, limit + 1, 6):
@@ -452,6 +454,8 @@ from microbit import display
 from machine import reset
 from random import randint
 
+# Rule for B3/S23
+# see https://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
 Born = '3'
 Sustain = '23'
 
@@ -512,4 +516,84 @@ while True:
         print('Resetting...')
         print('')
         reset()
+```
+
+## Morse Code Machine
+
+This allows you to enter your message and display it as Morse code on the LED screen. Go to the REPL mode and reset micro:bit to make it work.
+
+If you attach a passive buzzer between pin 0 and ground you can hear it too.
+
+```python
+from microbit import display, Image, sleep
+from micropython import const
+import music
+
+morse_delay = const(50) # morse code speed
+
+morse_code = {
+    'A': '.-',
+    'B': '-...',
+    'C': '-.-.',
+    'D': '-..',
+    'E': '.',
+    'F': '..-.',
+    'G': '--.',
+    'H': '....',
+    'I': '..',
+    'J': '.---',
+    'K': '-.-',
+    'L': '.-..',
+    'M': '--',
+    'N': '-.',
+    'O': '---',
+    'P': '.--.',
+    'Q': '--.-',
+    'R': '.-.',
+    'S': '...',
+    'T': '-',
+    'U': '..-',
+    'V': '...-',
+    'W': '.--',
+    'X': '-..-',
+    'Y': '-.--',
+    'Z': '--..',
+    '1': '.----',
+    '2': '..---',
+    '3': '...--',
+    '4': '....-',
+    '5': '.....',
+    '6': '-....',
+    '7': '--...',
+    '8': '---..',
+    '9': '----.',
+    '0': '-----',
+}
+
+def fillScreen():
+    f = (str(9) * 5 + ':') * 5
+    display.show(Image(f[:len(f)-1]))
+    
+
+while True:
+    
+    print('Enter your message: (alphabets and numbers only)')
+    msg_str = input().upper()
+    morse_str = ''
+    print('Converting message...')
+    
+    for s in msg_str:
+        if s in morse_code:
+            for code in morse_code[s]:
+                morse_str += code
+                music.pitch(440)
+                fillScreen()
+                sleep(morse_delay * (3 if code == '-' else 1))
+                music.pitch(0)
+                display.clear()
+                sleep(morse_delay)
+    
+    print('Message converted:')
+    print(morse_str)
+    print('')
 ```
