@@ -6,6 +6,12 @@ See also [BBC micro:bit MicroPython documentation](https://microbit-micropython.
 
 This is the collection of my notes, tricks and experiments on BBC micro:bit and MicroPython.
 
+## Note: For the Upcoming V2.0 Version
+
+Right now you need to use [beta version of official Python editor](https://python.microbit.org/v/beta) to program the new BBC micro:bit V2. The docs are [here](https://microbit-micropython.readthedocs.io/en/v2-docs/tutorials/music.html).
+
+Some of the codes here may not work properly on V2. I'll update them if I can.
+
 ## Easer Eggs
 
 Enter the following codes in [REPL](https://microbit-micropython.readthedocs.io/en/latest/devguide/repl.html):
