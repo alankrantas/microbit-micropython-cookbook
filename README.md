@@ -354,42 +354,43 @@ from microbit import pin0, sleep
 from neopixel import NeoPixel
 from micropython import const
 
-led_num = const(12)
-led_maxlevel = const(64) # max 255
-led_pin = pin0
+led_num      = const(12)  # number of NeoPixels
+led_maxlevel = const(128)  # light level (0-255)
+led_delay    = const(0)  # NeoPixels cycle delay
 
-np = NeoPixel(led_pin, led_num)
+np = NeoPixel(pin0, led_num)
 
-def showRainbow():
-    change_amount = int(led_maxlevel / (led_num / 3))
-    index = (0, int(led_num / 3), int(led_num / 3 * 2))
+def wheel(pos):
+    r, g, b = 0, 0, 0
+    if pos < 0 or pos > 255:
+        r, g, b = 0, 0, 0
+    elif pos < 85:
+        r, g, b = 255 - pos * 3, pos * 3, 0
+    elif pos < 170:
+        pos -= 85
+        r, g, b = 0, 255 - pos * 3, pos * 3
+    else:
+        pos -= 170
+        r, g, b = pos * 3, 0, 255 - pos * 3
+    r = round(r * led_maxlevel / 255)
+    g = round(g * led_maxlevel / 255)
+    b = round(b * led_maxlevel / 255)
+    return (r, g, b)
+
+def rainbow_cycle():
+    global cycle
     for i in range(led_num):
-        color = [0, 0, 0]
-        for j in range(3):
-            if abs(i - index[j]) <= index[1]:
-                color[j] = led_maxlevel - abs(i - index[j]) * change_amount
-                if color[j] < 0:
-                    color[j] = 0
-        if i >= index[2]:
-            color[0] = led_maxlevel - (led_num - i) * change_amount
-            if color[0] < 0:
-                color[0] = 0
-        np[i] = tuple(color)
+        rc_index = (i * 256 // led_num) + cycle
+        np[i] = wheel(rc_index & 255)
     np.show()
-
-def ledRotate():
-    tmp = np[led_num - 1]
-    for i in reversed(range(1, led_num)): # clockwise
-        np[i] = np[i - 1]
-    np[0] = tmp
-    np.show()
+    sleep(led_delay)
+    cycle = (cycle + 1) if cycle < 255 else 0
 
 
-showRainbow()
+cycle = 0
 
 while True:
-    ledRotate()
-    sleep(50)
+    rainbow_cycle()
 ```
 
 ## Calcualte Fibonacci Sequence
