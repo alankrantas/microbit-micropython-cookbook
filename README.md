@@ -1,85 +1,53 @@
-# micro:bit MicroPython Cookbook (Updating)
+# micro:bit V2 MicroPython Cookbook (Updating)
 
 ![1](https://user-images.githubusercontent.com/44191076/79871966-c0ae8b00-8417-11ea-8255-cbc681d12b8d.jpg)
 
 See also [BBC micro:bit MicroPython documentation](https://microbit-micropython.readthedocs.io/en/latest/index.html#)
 
-This is the collection of my notes, tricks and experiments on BBC micro:bit and MicroPython.
+This is the collection of my notes, tricks and experiments on BBC micro:bit and MicroPython. This guide has bee upgraded for micro:bit V2 and may not be fully compatible for V1.
 
-## Warning: The Code Below are Not Completely Compatible With the V2.0 Version
+## micro:bit's MicroPython
 
-BBC micro:bit V2 is released in Nov 2020. For not you need to use [beta version of official Python editor](https://python.microbit.org/v/beta) to program the new V2 board. The docs are [here](https://microbit-micropython.readthedocs.io/en/v2-docs/tutorials/music.html).
+micro:bit's MicroPython is based on Python 3.4 by Damien George. So basically all built-in features in and before Python 3.4 can be used on micro:bit.
 
-I've already noticed that some of the codes are not compatible on V2. I'll see what's need to be solved when the new editor version is officially online.
+Since MicroPython is a dynamic language like Python, it requires more memory than other embedded langauges. But this is no longer an big issue for V2 which has 128k RAM instead of 16K on V1. It is also possible to run recursion algorithm without getting errors.
 
-## Easer Eggs
+However, Bluetooth support are still unavailable in both version of firmwares.
 
-Enter the following codes in [REPL](https://microbit-micropython.readthedocs.io/en/latest/devguide/repl.html):
+## Ask Help From REPL
 
-```python
-import this
-import love
-import antigravity
-```
+REPL (Read-Evaluate-Print-Loop) or "Serial" in the official editor is a very useful testing tool. You may need to press Ctrl + C to force the device to stop its current program and enter REPL mode.
 
-The result from <b>import this</b> is a version of [Zen of Python](https://www.python.org/dev/peps/pep-0020/) and <b>import antigravity</b> is from [original Python easter egg](https://xkcd.com/353/).
-
-Also you can try (also in REPL)
-
-```python
-this.authors()
-love.badaboom()
-```
-
-## A Little Help
-
-Display all modules in REPL:
+List all modules:
 
 ```python
 help('modules')
 ```
 
-And in REPL you can import a module and check out what it is and what's in there:
+To see what's in a module or submodule/function/attribute:
 
 ```python
 import microbit
+
 help(microbit)
+help(microbit.pin0)
 dir(microbit)
+dir(microbit.pin0)
 ```
 
-## Some Lesser Known Facts
+## Import * is a Bad Idea
 
-Since MicroPython, like standard Python, is a interpreted language, it eats a lot of memory. A slightly bigger program may cause MemoryError (out of memory). Also due to this reason, there is no room for the Bluetooth driver.
-
-Another limit is that the MicroPython hex file are consisted of 2 parts: the MicroPython firmware (up to 248 KB) and user's script (up to only 8 KB). See [Firmware Hex File](https://microbit-micropython.readthedocs.io/en/latest/devguide/hexformat.html). Which means it's less likely to build bigger projects with micro:bit's MicroPython.
-
-One way to "minimize" your script size is to use 1-space indents instead of 4.
-
-micro:bit's MicroPython is based on Python 3.4. Which means many built-in Python advanced feaetures are supported. Although some features are dropped as well to save memory.
-
-Nicholas H. Tollervey - also the creator of [Mu editor](https://codewith.mu/) - has an interesting account about [How BBC micro:bit get its MicroPython](http://ntoll.org/article/story-micropython-on-microbit).
-
-## Editor of Choice
-
-The official [Python online editor](https://python.microbit.org/v/2.0) does not need installation and can be used anywhere with Internet and Chrome web browser. Support Web-USB. It's ok to use, really.
-
-Personally, I would perfer [Mu editor](https://codewith.mu/) for any beginners. It has code check, (limited) auto-complete and can automatically detect/upload code to your micro:bit.
-
-If you have experiences in standard Python or MicroPython with ESP8266/ESP32 (or CircuitPython), you can consider [Thonny](https://thonny.org/) which allows you to access micro:bit's REPL directly without having to switch tabs.
-
-The Python online editor and Thonny allow you to upload your .py file onto your micro:bit. So it may still be possible to write a file bigger than 8KB. You can upload third party drivers by this way, although the micro:bit may not have enough RAM to run them all.
-
-## Why You Should Avoid Import *
-
-The following import statement
+in a lot of examples you may see
 
 ```python
 from microbit import *
 ```
 
-is not really a good idea. This imports everything from the big **microbit** module even you don't need many of the features and thus waste memory.
+Import does not "read" a module or function into memory; what it really does is to add variables (name tags) pointing to all the stuff under module "microbit". So you can use these names directly without writing ```microbit.something```.
 
-Instead, you should import the only submodules you are going to use:
+But using * to import everything is still a bad habit; in standard Python you might accidentally import something with same names and causing conflict. 
+
+Instead, the better and clearer way is to write it like this:
 
 ```python
 from microbit import pin0, display, sleep
@@ -93,18 +61,14 @@ from micropython import mem_info
 print(mem_info(1))
 ```
 
-You can also try to turn on garbage collection if the memory is almost full:
+You can also force micro:bit to free memory from time to time with garbage collection:
 
 ```python
 import gc
 
-gc.enable() # auto memory recycle
-gc.collect() # force memory recycle
+gc.enable()  # enable automatic memory recycle
+gc.collect()  # force memory recycle
 ```
-
-## Recursion is Not Welcomed
-
-Recursion depth (how many level can a function calls itself) is severely limited because of the memory constraint. Only [8 nested function calls or so](https://mail.python.org/pipermail/microbit/2016-February/000896.html) can be used without triggering RuntimeError. So sadly it's not possible to write some popular algorithms on micro:bit.
 
 ## Classic Blinky
 
@@ -140,36 +104,41 @@ while True:
     if accelerometer.is_gesture('shake'):
         dice = randint(1, 6)
         display.show(Image(dices[dice]))
-        sleep(100)
+        sleep(500)
 ```
 
 ## Fill LED Display
 
-Light up every LEDs. You can use fillScreen() as default.
+Light up every LEDs in a specific brightness level (default max):
 
 ```python
 from microbit import display, Image, sleep
 
-def fillScreen(b = 9):
-    f = (str(b) * 5 + ':') * 5
-    display.show(Image(f[:len(f)-1]))
+def fillScreen(b=9):  # fill screen function, b = brightness (0-9)
+    display.show(Image(':'.join([str(b) * 5] * 5)))
 
 
 while True:
-    
+    # blink screen twice
     for _ in range(2):
-        fillScreen()
-        sleep(100)
+        fillScreen()  # default = max brightness
+        sleep(250)
         display.clear()
-        sleep(100)
+        sleep(250)
     
-    for i in range(9):
+    sleep(500)
+    
+    # fade in
+    for i in range(10):
         fillScreen(i)
-        sleep(50)
+        sleep(75)
+    
+    # fade out
+    for i in reversed(range(10)):
+        fillScreen(i)
+        sleep(75)
         
-    for i in reversed(range(9)):
-        fillScreen(i)
-        sleep(50)
+    sleep(500)
 ```
 
 ## LED Bar Graph
@@ -179,22 +148,22 @@ A 25-level LED progress bar.
 ```python
 from microbit import display, sleep
 
-def plotBarGraph(value, maxValue, brightness=9):
+# bar graph function
+def plotBarGraph(value, maxValue, b=9):
     bar = value / maxValue
-    valueArray = ((0.96, 0.88, 0.84, 0.92, 1.00), 
-                  (0.76, 0.68, 0.64, 0.72, 0.80),
-                  (0.56, 0.48, 0.44, 0.52, 0.60), 
-                  (0.36, 0.28, 0.24, 0.32, 0.40), 
-                  (0.16, 0.08, 0.04, 0.12, 0.20))
+    values = ((0.96, 0.88, 0.84, 0.92, 1.00), 
+              (0.76, 0.68, 0.64, 0.72, 0.80),
+              (0.56, 0.48, 0.44, 0.52, 0.60), 
+              (0.36, 0.28, 0.24, 0.32, 0.40), 
+              (0.16, 0.08, 0.04, 0.12, 0.20))
     for y in range(5):
         for x in range(5):
-            display.set_pixel(x, y, 
-                brightness if bar >= valueArray[y][x] else 0)
+            display.set_pixel(x, y, b if bar >= values[y][x] else 0)
 
 
 while True:
     lightLevel = display.read_light_level()
-    plotBarGraph(lightLevel, 255) # or plotBarGraph(lightLevel, 255, 9)
+    plotBarGraph(lightLevel, 255)  # or plotBarGraph(lightLevel, 255, 9)
     sleep(50)
 ```
 
@@ -211,85 +180,101 @@ import utime
 delay1, delay2 = 1000, 300
 since1, since2 = utime.ticks_ms(), utime.ticks_ms()
 
+
 while True:
     
     now = utime.ticks_ms()
     
-    if utime.ticks_diff(now, since1) >= delay1:
+    if utime.ticks_diff(now, since1) >= delay1:  # toogle LED (0, 0)
         display.set_pixel(0, 0, 9 if display.get_pixel(0, 0) == 0 else 0)
         since1 = utime.ticks_ms()
     
-    if utime.ticks_diff(now, since2) >= delay2:
+    if utime.ticks_diff(now, since2) >= delay2:  # toogle LED (4, 4)
         display.set_pixel(4, 4, 9 if display.get_pixel(4, 4) == 0 else 0)
         since2 = utime.ticks_ms()
 ```
 
 ## A More Convenient Pin Class?
 
-Make a Pin class to "rename" existing pin methods.
+Define a Pin class to repackage existing pin methods.
 
 ```python
-from microbit import pin0, pin2, sleep
+from microbit import pin1, pin2, sleep
 
 class Pin:
     
-    __slots__ = ['pin']
+    __slots__ = ['pin']  # not to use dictionary to store attributes to save memory
     
     def __init__(self, pin):
         self.pin = pin
     
-    def set(self, value):
+    def setPin(self, value):
         self.pin.write_digital(value)
     
     def setPWM(self, value):
         self.pin.write_analog(value)
     
-    def get(self):
-        self.pin.set_pull(self.pin.PULL_DOWN)
+    def getPin(self):
+        self.pin.set_pull(self.pin.NO_PULL)
         return self.pin.read_digital()
+        
+    def getADC(self):
+        try:
+            return self.pin.read_analog()
+        except:
+            return 0
     
-    def pressed(self):
+    def isPressed(self):
         self.pin.set_pull(self.pin.PULL_UP)
         return not self.pin.read_digital()
         
-    def getADC(self):
-        return self.pin.read_analog()
+    def isTouched(self):
+        try:
+            self.pin.set_pull(self.pin.NO_PULL)
+            return self.pin.is_touched()
+        except:
+            return False
 
 
-led = Pin(pin0)
-button = Pin(pin2)
+led = Pin(pin1)  # external led at pin 1
+button = Pin(pin2)  # external button at pin 2
 
 while True:
-    led.set(button.pressed())
+    # light up LED when button is pressed
+    led.setPin(button.isPressed())
     sleep(50)
 ```
 
+Note: the external button needs to be "pulled up" with internal resistor so that micro:bit can read the input voltage change. Pin 5/11 (onboard button A/B) have their own internal pull-up resistors.
+
+The external LED can be connected without a resistor, for the pin power output is 3.3V/6 mA only which is pretty harmless to any LEDs.
+
 ## Simpler Alternate Pin Class
 
-Use **namedtuple** as a simple Pin class. Might save more memory than regular class.
+Use **namedtuple** as a simple Pin class. We point the pin methods to attributes of a namedtuple container.
 
 ```python
-from microbit import pin0, pin2, sleep
+from microbit import pin1, pin2, sleep
 from ucollections import namedtuple
 
-Pin = namedtuple('Pin', ['set', 'get'])
+Pin = namedtuple('Pin', ['setPin', 'setPWM', 'getPin', 'getADC', 'isTouched'])
 
-def setPin(pin, pull_up=False):
-    pin.set_pull(pin.PULL_UP if pull_up else pin.PULL_DOWN)
-    return Pin(pin.write_digital, pin.read_digital)
+def newPin(pin, pull_up=False):
+    pin.set_pull(pin.PULL_UP if pull_up else pin.NO_PULL)
+    return Pin(pin.write_digital, pin.write_analog, pin.read_digital, pin.read_analog, pin.is_touched)
 
 
-led = setPin(pin0)
-button = setPin(pin2, pull_up=True)
+led = newPin(pin1)
+button = newPin(pin2, pull_up=True)
 
 while True:
-    led.set(not button.get())
+    led.setPin(not button.getPin())
     sleep(50)
 ```
 
 ## Value Mapping
 
-Translate a value in a range to its corresponding value in anoher range. Borrowed from [here](https://stackoverflow.com/questions/1969240/mapping-a-range-of-values-to-another).
+Translate a value in a range to its corresponding value in anoher range, similar to map() in Arduino. Borrowed from [here](https://stackoverflow.com/questions/1969240/mapping-a-range-of-values-to-another).
 
 ```python
 from microbit import display, sleep
@@ -309,6 +294,8 @@ while True:
 
 ## Servo Control
 
+Note: pin.set_analog_period currently throws ValueError and has been fixed in a future release.
+
 ```python
 from microbit import pin0, sleep
 
@@ -326,16 +313,16 @@ while True:
     sleep(1000)
 ```
 
-Do not use servos and buzzers at the same time. They require different PWM frequencies and most microcontrollers can only set one frequency accross all pins at a time.
+Do not use servos and buzzers at the same time. They require different PWM frequencies and most microcontrollers can only use one frequency accross all pins at a time.
 
-Also: micro:bit's power output may just (barely) enough to power a single SG90 mini servo. External power supply is recommended.
+micro:bit V2 can output 190 mA from its 3V pin, which is enough for most hobby servos.
 
 
 ## Get Pitch and Roll Degrees
 
 These function cannot tell if the board is facing up or down. Probably need to use accelerometer.get_z() for that.
 
-Go to REPL and reset micro:bit to see the output.
+Upload code and switch to REPL, you should see the output.
 
 ```python
 from microbit import accelerometer, sleep
@@ -405,49 +392,6 @@ while True:
     sleep(50)
 ```
 
-## HC-SR04 Ultrasonic Sensor
-
-Get detected distance from HC-SR04/HC-SR04P sonar sensors. Set the parameter unit to 'cm' or 'inch'. External power supply recommended.
-
-```python
-from machine import time_pulse_us
-from utime import sleep_us
-from microbit import pin1, pin2, display, Image, sleep
-
-def sonar(trig_pin, echo_pin, unit='cm'):
-    
-    trig_pin.write_digital(0)
-    sleep_us(2)
-    trig_pin.write_digital(1)
-    sleep_us(10)
-    trig_pin.write_digital(0)
-    
-    while echo_pin.read_digital() == 0:
-        pass
-    
-    duration = time_pulse_us(echo_pin, 1, 30000)
-    
-    if unit == 'cm':
-        return duration / 2.0 * 0.03313
-    elif unit == 'inch':
-        return duration / 2.0 * 0.01304
-    else:
-        return duration
-
-
-while True:
-    
-    distance = sonar(trig_pin=pin1, echo_pin=pin2, unit='cm')
-    print(distance)
-    
-    if 2 <= distance <= 20:
-        display.show(Image.YES)
-    else:
-        display.clear()
-    
-    sleep(100)
-```
-
 ## Calcualte Fibonacci Sequence
 
 [Fibonacci sequence](https://en.wikipedia.org/wiki/Fibonacci_number)
@@ -455,15 +399,16 @@ while True:
 ```python
 from microbit import display
 
-Fibonacci_num = 42 # calculate nth number
-a = 0
-b = 1
+def Fibonacci(n):  # calculate nth number
+    a = 0
+    b = 1
+    for i in range(n - 2):
+        a, b = b, a + b
+    return b
 
-for i in range(Fibonacci_num - 2):
-    a, b = b, a + b
-
-print(b)
-display.scroll(b)
+f = Fibonacci(42)
+print(f)
+display.scroll(f)
 ```
 
 ## Calcuate a List of Prime Numbers
@@ -473,34 +418,67 @@ Prime numbers (except 2, 3) are either 6n - 1 or 6n + 1. So we check if a number
 ```python
 from microbit import display
 
-limit = 50 # calculate primes up to 50
-primes = [2, 3]
+def find_primes(n):  # calculate primes up to n
+    primes = [2, 3]
+    for p in range(6, n + 1, 6):
+        for p_test in range(p - 1, p + 2, 2):
+            for prime in primes:
+                if p_test % prime == 0:
+                    break
+            else:  # only execute when for is not exited by break
+                primes.append(p_test)
+    return primes
 
-for p in range(6, limit + 1, 6):
-    for p_test in range(p - 1, p + 2, 2):
-        p_test_is_prime = True
-        for prime in primes:
-            if p_test % prime == 0:
-                p_test_is_prime = False
-                break
-        if p_test_is_prime:
-            primes.append(p_test)
 
+primes = find_primes(50)
 print(primes)
 for prime in primes:
     display.scroll(prime)
 ```
 
+## N-Queens
+
+```python
+import utime
+
+maxQueens = 8
+queens = [0] * maxQueens
+
+def verifyPos(checkPos, newPos):
+    for tmpPos in range(checkPos):
+        if queens[tmpPos] == newPos or abs(tmpPos - checkPos) == abs(queens[tmpPos] - newPos):
+            return False
+    return True
+
+def placeQueen(columnPos, maxNum):
+    global counter, queens
+    if columnPos == maxNum:
+        counter += 1
+        print(counter, queens)
+    else:
+        for newPos in range(1, maxNum + 1):
+            if verifyPos(columnPos, newPos):
+                queens[columnPos] = newPos
+                placeQueen(columnPos + 1, maxNum)
+
+counter = 0
+startTime = utime.ticks_ms()
+placeQueen(0, maxQueens)
+timeDiff = utime.ticks_diff(utime.ticks_ms(), startTime) / 1000
+
+print(counter, 'result(s) in', timeDiff, 'sec')
+```
+
 ## Conway's Game of Life on 5x5 LED Display
 
 ```python
-from microbit import display
+from microbit import display, sleep
 from machine import reset
 from random import randint
 
 # Rule for B3/S23
 # see https://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
-Born = '3'
+Born    = '3'
 Sustain = '23'
 
 matrix = [bytearray((1 if randint(0, 2) == 0 else 0) 
@@ -560,6 +538,8 @@ while True:
         print('Resetting...')
         print('')
         reset()
+        
+    sleep(50)
 ```
 
 The code would reset the micro:bit if there's no cell left or the cells are stable. Although sometimes it may be locked into a state with the same alternating cell numbers and need manual reset.
@@ -656,17 +636,16 @@ If there's no signal received the strength data would be set as zero.
 from microbit import display, sleep
 import radio
 
-def plotBarGraph(value, maxValue, brightness=9):
+def plotBarGraph(value, maxValue, b=9):
     bar = value / maxValue
-    valueArray = ((0.96, 0.88, 0.84, 0.92, 1.00), 
-                  (0.76, 0.68, 0.64, 0.72, 0.80),
-                  (0.56, 0.48, 0.44, 0.52, 0.60), 
-                  (0.36, 0.28, 0.24, 0.32, 0.40), 
-                  (0.16, 0.08, 0.04, 0.12, 0.20))
+    values = ((0.96, 0.88, 0.84, 0.92, 1.00), 
+              (0.76, 0.68, 0.64, 0.72, 0.80),
+              (0.56, 0.48, 0.44, 0.52, 0.60), 
+              (0.36, 0.28, 0.24, 0.32, 0.40), 
+              (0.16, 0.08, 0.04, 0.12, 0.20))
     for y in range(5):
         for x in range(5):
-            display.set_pixel(x, y, 
-                brightness if bar >= valueArray[y][x] else 0)
+            display.set_pixel(x, y, b if bar >= values[y][x] else 0)
 
 
 radio.config(group=42, power=7)
