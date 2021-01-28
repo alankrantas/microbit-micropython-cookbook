@@ -6,7 +6,7 @@ See also [BBC micro:bit MicroPython documentation](https://microbit-micropython.
 
 This is the collection of my notes, tricks and experiments on BBC micro:bit and MicroPython. This guide has bee upgraded for micro:bit V2 and may not be fully compatible for V1.
 
-## micro:bit's MicroPython
+## Something About micro:bit's MicroPython
 
 micro:bit's MicroPython is based on Python 3.4 by Damien George. So basically all built-in features in and before Python 3.4 can be used on micro:bit.
 
@@ -551,12 +551,14 @@ This allows you to enter your message and display it as Morse code on the LED sc
 If you attach a passive buzzer between pin 0 and ground you can hear the Morse code too.
 
 ```python
-from microbit import display, Image, sleep
+from microbit import display, Image, set_volume, sleep
 from micropython import const
 import music
 
-morse_delay = const(50) # morse code speed
+set_volume(128)  # speaker volume (0-255)
+morse_delay = const(75)  # morse code delay speed
 
+# morse code table
 morse_code = {
     'A': '.-',
     'B': '-...',
@@ -595,32 +597,27 @@ morse_code = {
     '9': '----.',
     '0': '-----',
 }
-
-def fillScreen():
-    f = (str(9) * 5 + ':') * 5
-    display.show(Image(f[:len(f)-1]))
     
-
 while True:
     
     print('Enter your message: (alphabets and numbers only)')
-    msg_str = input().upper()
-    morse_str = ''
+    msg_str = input('> ').upper()
     print('Converting message...')
     
+    morse = []
     for s in msg_str:
         if s in morse_code:
             for code in morse_code[s]:
-                morse_str += code
+                morse.append(code)
                 music.pitch(440)
-                fillScreen()
+                display.show(Image.TARGET)
                 sleep(morse_delay * (3 if code == '-' else 1))
-                music.pitch(0)
+                music.stop()
                 display.clear()
                 sleep(morse_delay)
     
     print('Message converted:')
-    print(morse_str)
+    print(''.join(morse))
     print('')
 ```
 
