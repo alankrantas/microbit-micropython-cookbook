@@ -436,12 +436,14 @@ for prime in primes:
     display.scroll(prime)
 ```
 
-## N-Queens
+## Solving N-Queens Problems
+
+[Eight queens puzzle](https://en.wikipedia.org/wiki/Eight_queens_puzzle)
 
 ```python
 import utime
 
-maxQueens = 8
+maxQueens = 8  # N 
 queens = [0] * maxQueens
 
 def verifyPos(checkPos, newPos):
