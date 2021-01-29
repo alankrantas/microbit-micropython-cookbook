@@ -4,7 +4,7 @@
 
 See also [BBC micro:bit MicroPython documentation](https://microbit-micropython.readthedocs.io/en/latest/index.html#)
 
-This is the collection of my notes, tricks and experiments on BBC micro:bit and MicroPython. This guide has bee upgraded for micro:bit V2 and may not be fully compatible for V1.
+This is the collection of my notes, tricks and experiments on BBC micro:bit and MicroPython. This guide has bee upgraded for micro:bit V2; most of them are compatible with V1 but there would be limitations.
 
 ## Something About micro:bit's MicroPython
 
@@ -384,7 +384,7 @@ def rainbow_cycle():
         np[i] = wheel(rc_index & 255)
     np.show()
     sleep(led_delay)
-    cycle = (cycle + 1) if cycle < 255 else 0
+    cycle = (cycle + 1) & 255
 
 
 cycle = 0
