@@ -633,6 +633,8 @@ while True:
 
 Load the code to two micro:bits. They will detect each other's radio signal strength and show it as LED bar graph. Can be used as an indoor treasure hunt game.
 
+(This also works for micro:bit V1, however V1 is slower so there will be signal gap received by V2. So in order to mix V1 and V2, You'll have to either speed up V1 or slow down V2 loop delay.)
+
 Due to some reason, the signal strength or RSSI changes very little regardless of transmite power. So I roughly remapped the value to 0-60 so that you can see the changes more clearly.
 
 If there's no signal received the strength data would be set as zero.
