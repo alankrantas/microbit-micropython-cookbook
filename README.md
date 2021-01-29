@@ -8,7 +8,7 @@ This is the collection of my notes, tricks and experiments on BBC micro:bit and 
 
 ## Something About micro:bit's MicroPython
 
-micro:bit's MicroPython is based on Python 3.4 by Damien George. So basically all built-in features in and before Python 3.4 can be used on micro:bit.
+micro:bit's MicroPython is developed by Damien George which is based on Python 3.4. So basically all built-in features in and before Python 3.4 can be used on micro:bit.
 
 Since MicroPython is a dynamic language like Python, it requires more memory than other embedded langauges. But this is no longer an big issue for V2 which has 128k RAM instead of 16K on V1. It is also possible to run recursion algorithm without getting errors.
 
@@ -29,9 +29,9 @@ To see what's in a module or submodule/function/attribute:
 ```python
 import microbit
 
-help(microbit)
+help(microbit)  # display help content if there's any
 help(microbit.pin0)
-dir(microbit)
+dir(microbit)  # list all members in this namespace
 dir(microbit.pin0)
 ```
 
@@ -90,7 +90,7 @@ You might need to shake it harder to see changes. The gesture detection is not i
 from microbit import display, Image, accelerometer, sleep
 from random import randint
 
-dices = {
+dices = {  # dictionary of 5x5 dice images
     1: '00000:00000:00900:00000:00000',
     2: '00900:00000:00000:00000:00900',
     3: '90000:00000:00900:00000:00009',
@@ -102,8 +102,7 @@ dices = {
 while True:
     
     if accelerometer.is_gesture('shake'):
-        dice = randint(1, 6)
-        display.show(Image(dices[dice]))
+        display.show(Image(dices[randint(1, 6)]))
         sleep(500)
 ```
 
@@ -203,7 +202,7 @@ from microbit import pin1, pin2, sleep
 
 class Pin:
     
-    __slots__ = ['pin']  # not to use dictionary to store attributes to save memory
+    __slots__ = ['pin']  # not to use dictionary to store attributes in order to save memory
     
     def __init__(self, pin):
         self.pin = pin
@@ -251,7 +250,7 @@ The external LED can be connected without a resistor, for the pin power output i
 
 ## Simpler Alternate Pin Class
 
-Use **namedtuple** as a simple Pin class. We point the pin methods to attributes of a namedtuple container.
+Use **namedtuple** (a tuple that elements have attribute names) as a simple Pin class. We point the pin methods to these attributes.
 
 ```python
 from microbit import pin1, pin2, sleep
@@ -274,7 +273,7 @@ while True:
 
 ## Value Mapping
 
-Translate a value in a range to its corresponding value in anoher range, similar to map() in Arduino. Borrowed from [here](https://stackoverflow.com/questions/1969240/mapping-a-range-of-values-to-another).
+Translate a value in a range to its corresponding value in anoher range, similar to **map()** in Arduino or micro:bit MakeCode. Borrowed from [here](https://stackoverflow.com/questions/1969240/mapping-a-range-of-values-to-another).
 
 ```python
 from microbit import display, sleep
@@ -294,7 +293,7 @@ while True:
 
 ## Servo Control
 
-Note: pin.set_analog_period currently throws ValueError and has been fixed in a future release.
+Note: currently (as for v2 beta) pin.set_analog_period throws ValueError and has been fixed in a future release.
 
 ```python
 from microbit import pin0, sleep
@@ -320,7 +319,7 @@ micro:bit V2 can output 190 mA from its 3V pin, which is enough for most hobby s
 
 ## Get Pitch and Roll Degrees
 
-These function cannot tell if the board is facing up or down. Probably need to use accelerometer.get_z() for that.
+Similar to functions in micro:bit MakeCode. Be noted that these function cannot tell if the board is facing up or down. Probably need to use z axis readings for that.
 
 Upload code and switch to REPL, you should see the output.
 
@@ -347,7 +346,7 @@ while True:
 ```
 ## NeoPixel Rainbow/Rotation Effect
 
-This code needs at least 3 LEDs in the NeoPixel chain. Of course, you can set a number (much) higher than actual LEDs to get smooth rainbow effects.
+This code is based on Adafruit's example with adjustable brightness level.
 
 ```python
 from microbit import pin0, sleep
@@ -412,6 +411,8 @@ print(f)
 display.scroll(f)
 ```
 
+Why not a recursive version as well? Because the recursion depth is limited on micro:bits (V2 is a lot better than V1 but still quite limited) so it's not that ptractical to do so.
+
 ## Calcuate a List of Prime Numbers
 
 Prime numbers (except 2, 3) are either 6n - 1 or 6n + 1. So we check if a number of 6n - 1/6n + 1 can be divided with any existing primes in the list. If not, it is a prime number and can be added to the list.
@@ -440,6 +441,8 @@ for prime in primes:
 ## Solving N-Queens Problems
 
 [Eight queens puzzle](https://en.wikipedia.org/wiki/Eight_queens_puzzle)
+
+This one use recursion, and the recursion depth is not that big to be run on micro:bit V2. Of course, N > 10 will take like forever to calculate.
 
 ```python
 import utime
@@ -473,6 +476,10 @@ print(counter, 'result(s) in', timeDiff, 'sec')
 ```
 
 ## Conway's Game of Life on 5x5 LED Display
+
+[Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
+
+The program automatically reset the board when the number of cells dosen't change for a while.
 
 ```python
 from microbit import display, sleep
@@ -549,9 +556,7 @@ The code would reset the micro:bit if there's no cell left or the cells are stab
 
 ## Morse Code Machine
 
-This allows you to enter your message and display it as Morse code on the LED screen. Go to the REPL mode and reset micro:bit to make it work.
-
-If you attach a passive buzzer between pin 0 and ground you can hear the Morse code too.
+This allows you to enter your message into micro:bit and translate it to Morse code with the LED screen/buzzer. Go to the REPL mode and you'll see the promot.
 
 ```python
 from microbit import display, Image, set_volume, sleep
@@ -626,7 +631,7 @@ while True:
 
 ## Radio Proximity Sensor
 
-Load the code below to two micro:bits. They will detect each other's radio signal strength and display it as LED bar graph. Can be used as a indoor treasure hunt game.
+Load the code to two micro:bits. They will detect each other's radio signal strength and show it as LED bar graph. Can be used as an indoor treasure hunt game.
 
 Due to some reason, the signal strength or RSSI changes very little regardless of transmite power. So I roughly remapped the value to 0-60 so that you can see the changes more clearly.
 
