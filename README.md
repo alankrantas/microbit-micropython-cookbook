@@ -564,7 +564,7 @@ from microbit import display, Image, set_volume, sleep
 from micropython import const
 import music
 
-set_volume(128)  # speaker volume (0-255)
+set_volume(255)  # speaker volume (0-255)
 morse_delay = const(75)  # morse code delay speed
 
 # morse code table
@@ -609,24 +609,23 @@ morse_code = {
     
 while True:
     
-    print('Enter your message: (alphabets and numbers only)')
+    print('Enter your message: (Press enter to exit)')
     msg_str = input('> ').upper()
-    print('Converting message...')
+    if not msg_str:
+        break
     
-    morse = []
-    for s in msg_str:
-        if s in morse_code:
-            for code in morse_code[s]:
-                morse.append(code)
-                music.pitch(440)
-                display.show(Image.TARGET)
-                sleep(morse_delay * (3 if code == '-' else 1))
-                music.stop()
-                display.clear()
-                sleep(morse_delay)
+    morse_str = ''.join([morse_code[s] for s in msg_str
+                         if s in morse_code])
+    print('Message converted:\n', morse_str)
     
-    print('Message converted:')
-    print(''.join(morse))
+    for code in morse_str:
+        music.pitch(440)
+        display.show(Image.TARGET)
+        sleep(morse_delay * (3 if code == '-' else 1))
+        music.stop()
+        display.clear()
+        sleep(morse_delay)
+    
     print('')
 ```
 
