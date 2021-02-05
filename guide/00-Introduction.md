@@ -4,7 +4,7 @@
 
 When Guido van Rossum created the Python programming language in 1989, it was meant to be an easy-to-use general-purpose programming language. And it still is today; Python is indeed very easy to learn, at the start at least, but there are so many short-cuts and hidden features that can easily confuse beginners and even veterans. Also, a lot of stuff in Python jsut don't work like the ways in other languages (C/C++, Java, even the TypeScript blocks in the MakeCode editor for micro:bit).
 
-Another problem is that the purpose of learning Python is now almost exclusively for learning data science/data analysis, since there are so many popular third party packages designed for Python. These tools only require minimum Python; since data analysis job demands are high, this is probably why so many people - especially people with no IT backgrounds - are learning Python now.
+Another problem is that the learning Python today is almost exclusively aim for data science/data analysis, since there are so many popular third party packages designed for Python. These tools only require minimum Python; since job demand in data analysis is still high, this is probably why so many people (especially people with no IT backgrounds) are learning Python.
 
 Personally, I think Python on embedded device - MicroPython - is another great path you can try. Instead of manipulating pure data on your computer, you can design devices that actually intract with the environment and solve real-life problems. You'll need to think differently compared to writing single-use data analysis codes because your program will have to run as long as it can. It helped a lot for my own Python skills.
 
