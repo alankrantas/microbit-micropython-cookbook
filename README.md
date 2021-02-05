@@ -547,6 +547,7 @@ while True:
     if cell_count == 0 or cell_repeat >= 7:
         print('Resetting...')
         print('')
+        sleep(500)
         reset()
         
     sleep(50)
