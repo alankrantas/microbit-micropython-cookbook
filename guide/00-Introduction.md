@@ -1,4 +1,4 @@
-# Python Guide on micro:bit - Introduction
+# Python Guide on BBC micro:bit 00: Introduction
 
 ## About this guide
 
