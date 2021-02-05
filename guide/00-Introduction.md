@@ -22,4 +22,4 @@ features.
 So I am not writing this guide for children; this is for teachers and (young) adults who are interested in learning Python from scratch (no pun intended) 
 on micro:bits. This is also a free project, so please give me a issue if you have trouble to understand anything.
 
-- Alan Wang
+-- Alan Wang
