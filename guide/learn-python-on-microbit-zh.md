@@ -8,43 +8,25 @@
 
 ## 關於本指南
 
-網路上的 micro:bit 教材眾多，但主要是以兒童教學為設計目的，因此大多著重在 micro:bit 自身的功能，較少解釋程式語言本身。而 Python 語言儘管看似易學，一開始也確實能學得很快，許多教材（包括書籍）卻很少能正確交代關鍵的概念。
+這份指南不是替兒童而寫，而是有興趣使用 BBC micro:bit 開發板為媒介來學習 Python 語言的成人或青少年。
 
-本指南是寫給成人或青少年，包括有意學習 Python 並投入教學的教師，而不是寫給兒童閱讀。在此筆者會嘗試將傳統的 Python 教學與 micro:bit 融合，並在盡量只使用 micro:bit 本身的前提下帶過 Python 至少入門到中階的語言功能。等到各位對 Python 的運作有足夠了解後，就可以用自己的方式教導兒童了。
+現有的書籍或網路教材，在談及 micro:bit 的 Python 教學時，多半著重在 micro:bit 的功能和相關的範例，卻鮮少深入 Python 的語言特色。這份指南的目的是借用 micro:bit 的硬體特色來介紹 Python 的重要概念，好讓學習者將來能將之應用在正式的 Python 程式開發。
 
-目前 micro:bit 的 MakeCode 圖形編輯器（使用 TypeScript/JavaScript 語言）也「支援」Python，但這個 Python 版本只是單純從 JavaScript 轉換過來而已，它並不支援 Python 語言的一些特色。因此筆者並不鼓勵將該編輯器的 Python 當成學習目標。
+至於 micro:bit 是什麼、為什麼現在要學 Python，這些在網路上已經有非常多討論，這裡就不再贅述。
 
-## 為何要學 Python？
+## 閱讀本指南所需的準備
 
-最簡單的答案是：因為大家都在學，包括非理工背景的人士。學 [Python](https://zh.wikipedia.org/zh-tw/Python) 的人是如此之多，它在職場已經逐漸被視為如英語或數學一樣的重要技能。且既然 Python （一開始）相對容易學，它也成為新一代資訊教育經常用來教學生的語言。
+本指南會使用 2020 年 10 月後上市的新版 [micro:bit V2](https://microbit.org/zh-tw/new-microbit/)，但大部分程式碼也適用於 V1。筆者推薦使用 V2，因為價格相近但規格更佳，有更多記憶體執行 Python 直譯器。
 
-Python 理論上是多用途的系統語言，但它在企業系統的用處正在慢慢被像是 Go、Rust 之類的語言取代。目前學 Python 的最主要回報，是有機會成為資料科學家／資料分析師／機器學習專家：這類工作在 2010 年代前期到中期的需求與薪資達到了驚人的高峰。這歸功於針對 Python 設計的大量第三方套件，讓任何人都能進行資料分析以及資料視覺化，甚至跨進人工智慧領域。簡單地說，不管你（誤）讀什麼科系，學 Python 都是個讓自己非常難餓死的好辦法。
-
-不過，筆者認為 Python 的另一個選擇是「嵌入式 Python」──在 micro:bit 這樣的微控制器／開發板上用 Python 控制它。由於其設計特性，Python 執行起來比 Arduino 的 C++ 語言慢上不少，但寫起來卻容易很多。此外，既然開發板得和人類互動，你往往還得給程式「降速」，所以大多時候運作效能其實並不重要。比起純粹處理資料的純電腦程式，嵌入式 Python 賦予了我們跟真實世界互動、解決生活問題的機會，而且對於撰寫程式上也能訓練出更靈活的思維。
-
-那麼，孩子多小可以學 Python 呢？這大概得看個人資質，不過國高中以下恐怕都不是好主意。一來學寫程式仰賴英文閱讀及打字能力，二來它需要抽象思考。坊間有很多兒童教育單位會用遊戲式方式教導運算思維等等，但那和真正寫程式是有差距的。我自己也是直到兩年前才開始學 Python，所以只要年紀夠大，什麼時候開始並不會有差別。
-
-## MicroPython
-
-當然，正規的 Python 沒有辦法在記憶體很小的微控制器上執行。micro:bit 使用的 Python，其實是 Python 的一種特殊版本，叫做 MicroPython。
-
-MicroPython 的功能自然沒有一般 Python 多，而且含有和開發板有關的控制功能。不過，絕大部分的核心 Python 功能是一樣的。
-
-更精確來說，目前的 MicroPython（包含各種衍生版本）都是以 2014 年的 Python 3.4 為基礎發展的，因此少數比較新的功能就沒辦法使用。還好那些功能大多都是比較進階的玩意。
-
-## 事前準備
-
-你需要一片 [BBC micro:bit](https://microbit.org/zh-tw/new-microbit/)，本指南會使用 2020 年 10 月後上市的第二版（V2），不過筆者會確保大部分的程式仍能與一代相容。既然二代擁有更大的記憶體、更快的處理器和更多功能，價格也與一代無異，使用二代自然是更合理的選擇。
-
-你也需要一條 micro USB 線，以及一台擁有 Google Chrome 瀏覽器、可上網的電腦。之後我們也許會討論到更多外部硬體器材的控制，但這會是講完 Python 語言主要部分之後的事了。
-
-接著打開 https://python.microbit.org/v/2 ，這是 micro:bit 基金會提供的線上官方編輯器，你不需要在電腦上安裝額外的程式或驅動程式。
+你也需要 micro USB 線以及一台有 Google Chrome 瀏覽器的電腦，就這樣。不須安裝其他東西。
 
 ### Python 編輯器
 
+打開 https://python.microbit.org/v/2 ：
+
 ![02](https://user-images.githubusercontent.com/44191076/107118877-baae6b80-68be-11eb-8bda-aa8013b3698f.png)
 
-這是個很簡單的 Python 編輯器，但其功能已經合乎學習需求。在這個指南中，筆者會著重在某些方面，目的是讓你將來能將操作套用到其他 Python 編輯器上（不只是 micro:bit 用的編輯器）。
+這是 micro:bit 官方提供的線上版瀏覽器，雖然簡單，但就本指南的目的來說夠用了。後面有機會的話，筆者會在談如何使用其他 Python 編輯器。
 
 畫面上方有五個大按鈕：
 
@@ -54,27 +36,15 @@ MicroPython 的功能自然沒有一般 Python 多，而且含有和開發板有
 * Open Serial/Close Serial (打開 REPL/關閉 REPL)
 * Help (線上說明)
 
-按鈕的內容會因與 micro:bit 連線與否而有所不同。下面我們會再找機會說明這些功能。
+按鈕的內容會因與 micro:bit 連線與否而有所不同。
 
-### 與 micro:bit 連線
+### 與 micro:bit 連線和燒錄第一支程式／韌體
 
-micro:bit 的硬體設計有點特別，因為它有兩個微控制器而不是一個。不過，真正用來執行程式的只有一個，另一個負責扮演程式燒錄介面。
+Python 是直譯式語言，這表示程式運作的地方必須裝有直譯器。幸好，官方編輯器簡化了這個流程：你從編輯器下載的 .hex 程式檔中，有一部分會包著 micro:bit 用的 Python 韌體，剩下的則是你寫的程式（又稱草稿碼）。即使你的 micro:bit 之前並沒有安裝 Python 韌體，只要燒錄一次程式就會自動完成韌體安裝。這也使得第一次燒錄──或者在使用過其他語言後重新燒錄──Python 會花較久的時間。
 
-微控制器一次只能儲存一個程式，而你要從電腦把寫好的程式上傳或燒錄到微控制器，就得透過一個通訊界面才行。這意味著你必須在電腦上安裝這個介面的驅動程式。
+> micro:bit 使用的 Python 實際上是 Micropython──設計給記憶體有限的開發版的 Python 版本。Micropython 本身就有好幾種版本，針對不同類型的開發板而作，不過它們都是是以 Python 3.4 為基礎。所以，Python 3.4 擁有的核心語言功能，在 micro:bit 都是可以使用的。
 
-為避免這種麻煩，micro:bit 的第二微控制器會模擬出一個 USB 磁碟區，你只要用複製貼上的方式把程式檔（從線上編輯器下載的檔案）丟進去，該程式就會燒錄到主控制器上。只是貼上或拖曳檔案的動作對某些小孩來說仍然有點吃力，因此後來加入了個新功能，叫做 WebUSB。簡單地說，這能讓 Chrome 瀏覽器直接跟 micro:bit 的 USB 磁碟區連線，把檔案下載到那兒，跳過了手動搬動檔案的動作。
-
-比較舊的 micro:bit 可用更新韌體的方式來獲得這種支援，不過現在販賣的 V1 或 V2 版本大多都是已經安裝有新版韌體的產品，因此這裡就跳過不談。
-
-現在，用 USB 線將你的 micro:bit 接上電腦，你應該會看到 micro:bit 開始顯示一些東西（這是它出場時預先安裝好的示範程式），電腦上也會跳出它的 USB 磁碟區。稍待片刻等電腦準備好，然後按編輯器的 **Connect**：
-
-![05](https://user-images.githubusercontent.com/44191076/107119477-c4d26900-68c2-11eb-94fd-6ad62ec2e567.png)
-
-點選 micro:bit 後按「連線」即可。
-
-### 燒錄第一支 Python 程式
-
-在進行以下課程之前，你應該先在 micro:bit 上用 Python 編輯器燒錄一隻程式，即使是完全空白的程式也無妨。或者你可用 Python 編輯器打開時已經填入畫面的程式：
+那麼，我們就來燒錄一支程式，直接用官方編輯器一打開就出現的程式即可：
 
 ```python
 # Add your Python code here. E.g.
@@ -87,13 +57,19 @@ while True:
     sleep(2000)
 ```
 
-確定 micro:bit 已經連線，然後按 **Flash**。等待畫面上的程式燒錄作業結束。
+將 micro:bit 接上電腦，然後按畫面中的 **Connect**，讓 Chrome 瀏覽器跟你的裝置連線：
 
-## REPL - Python 直譯器的窗口
+![05](https://user-images.githubusercontent.com/44191076/107119477-c4d26900-68c2-11eb-94fd-6ad62ec2e567.png)
 
-燒錄好程式後，我們要先來看一樣東西。
+連線後按 **Flash**。等待程式燒錄作業結束。
 
-點 **Open Serial**，然後點按鈕下方右側的「Send CTRL-C for REPL」或直接在鍵盤上按 Ctrl+C。你應該會看到以下畫面：
+> 較近期的 micro:bit 的韌體支援 WebUSB，讓瀏覽器能跟 USB 裝置連線，這麼一來編輯器就能直接下載程式到 micro:bit 上。現在市售的 micro:bit 應該都有新韌體了；但若你沒辦法連線，請用 Download 下載 .hex 檔後複製／貼上到 micro:bit 的 USB 磁碟區。
+
+## REPL 互動介面
+
+想學 Python，就不可不知 **REPL**（Read-Eval-Print Loop，讀取-求值-輸出循環）。簡單說，這是 Python 直譯器的互動介面，能讓開發者用來做簡單的測試、探索 Python 的功能、讀取程式的回應等等，不管在電腦或開發板上，對程式開發者來說都是很實用的工具。
+
+在 micro:bit 連線的情況下，點編輯器的 **Open Serial**，然後點按鈕下方右側的「Send CTRL-C for REPL」或直接在鍵盤上按 Ctrl+C。你應該會看到以下畫面：
 
 ![04](https://user-images.githubusercontent.com/44191076/107119544-44603800-68c3-11eb-9f0a-6305b40195ea.png)
 
@@ -105,24 +81,67 @@ Type "help()" for more information.
 >>> 
 ```
 
-是 Python 直譯器的 **REPL**（Read-Eval-Print Loop，讀取-求值-輸出循環）提示，這模式又稱為互動模式。一般兒童程式教學不會從這裡講起，但對所有 Python 學習者來說，這是你不能不認識的東西。
+就是 REPL 的提示，類似 Windows 命令提示字元或 Unix 的終端機。它告訴我們 Python 直譯器的版本，並等待我們輸入指令。
 
-目前所謂的程式語言，其實是經過設計好讓人類撰寫的一系列語法，那不是電腦能直接解讀的格式。傳統上像 C++ 之類的語言，必須在寫完程式後編譯（compile）它，把程式轉成二進位的機器碼（machine code）。如果編譯過程中發現程式有問題，編譯就會失敗，並試著告訴你哪幾行程式有問題。這類語言也稱為編譯式語言。
-
-但也有一些語言，包括 Python 在內，是直譯式語言，也就是不事先編譯，而是現場把程式一行行交給直譯器（interpreter）解讀，遇到問題時才停下來。（當然實際上沒有這麼簡單，不過我們可以先這樣認定就好。）直譯式語言的優勢是不必等待編譯就能馬上執行，這對於撰寫一些簡單的程式和做測試非常方便。而 REPL 是個像終端機一樣的介面，它能讓我們執行一些程式、檢查程式使用的資料、探索系統中有哪些功能等等。
-
-當你開始很常用 Python 寫程式時，你就會常常用到 REPL。你會發現它對於開發過程有不小的幫助。
-
-現在，在 REPL 畫面的 >>> 後面輸入以下句子，然後按 Enter：
+現在於 >>> 後面輸入 1 + 2，並按 Enter：
 
 ```
 >>> 1 + 2
 3
 ```
 
-Python 直譯器解讀了你輸入的句子，並自動算出答案。這個動作其實正是輸入一行程式給直譯器來執行。
+可以發現 Python 直譯器解讀了你輸入的程式，並自動算出答案。
 
+現在，照 REPL 提示所說的輸入 help()：
 
+```
+>>> help()
+Welcome to MicroPython on the micro:bit!
+
+Try these commands:
+  display.scroll('Hello')
+  running_time()
+  sleep(1000)
+  button_a.is_pressed()
+What do these commands do? Can you improve them? HINT: use the up and down
+arrow keys to get your command history. Press the TAB key to auto-complete
+unfinished words (so 'di' becomes 'display' after you press TAB). These
+tricks save a lot of typing and look cool!
+
+Explore:
+Type 'help(something)' to find out about it. Type 'dir(something)' to see what
+it can do. Type 'dir()' to see what stuff is available. For goodness sake,
+don't type 'import this'.
+
+Control commands:
+  CTRL-C        -- stop a running program
+  CTRL-D        -- on a blank line, do a soft reset of the micro:bit
+  CTRL-E        -- enter paste mode, turning off auto-indent
+
+For a list of available modules, type help('modules')
+
+For more information about Python, visit: http://python.org/
+To find out about MicroPython, visit: http://micropython.org/
+Python/micro:bit documentation is here: https://microbit-micropython.readthedocs.io/
+```
+
+這是 micro:bit 的 MicroPython 內建的訊息，包含一些簡單的指引。注意到這兒也提到了 Ctrl+C 和 Ctrl+D，前者是用來中斷 micro:bit 目前執行的程式（程式執行時不會出現前面的提示），而 Ctrl+D 是用來強迫 micro:bit 重開機，以便重新測試程式。
+
+現在試試這個：
+
+```
+>>> help('modules')
+__main__          math              os                ucollections
+audio             microbit          radio             urandom
+builtins          micropython       speech            ustruct
+gc                music             sys               utime
+machine           neopixel          uarray
+Plus any modules on the filesystem
+```
+
+現在 REPL 列出了 MicroPython 中的所有模組（module）。之後我們會看到它們是什麼，以及要如何使用。
+
+## Python 的基礎：陳述／運算式，物件，模組
 
 
 （持續寫作中...）
