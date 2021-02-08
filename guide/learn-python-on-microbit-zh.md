@@ -331,39 +331,11 @@ NameError: name 'a' isn't defined
 'test'
 ```
 
-上面 a 一開始是整數，後來變成字串了。
+上面 a 一開始是整數，後來變成字串了。事實上 Python 變數可以指向各種東西，其彈性
 
 > 當然，整數 1 和 2 等等是特例，它們是 Python 一開始就擁有的資料。有些資料是由使用者在執行程式期間建立的。
 
-Python 變數能指向各式各樣的東西，這使得熟悉 Python 的人可以用變數來做一些很神奇的事。當然對初學者來說，這有時也會產生一些令人困惑的現象。
 
-這裡先來舉個例子。在 Python 中，函式 **print** 能用來印出資料：
-
-```
->>> print("test")
-'test'
-```
-
-> 稍後我們會解釋什麼是函式。目前你只需要知道，函式呼叫時會在名稱後面加上 ()。
-
-在 REPL 模式下，它會自動將運算式的值印出來，可是稍後在執行正式程式時就不會這樣了。反而，你得使用 print() 將訊息印在 REPL 介面內，好讓我們知道程式的執行狀況等等。
-
-print 是 Python 事先定義好的東西。要是我們指定一個新的值給 print 這個名稱，會發生什麼事？
-
-```
->>> print = "this is a string"
->>> print
-'this is a string'
->>> print("test")
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: 'str' object isn't callable
->>> 
-```
-
-現在 print 這個路牌指向字串 'this is a string'，而不是原本能印出東西的功能了。當我們嘗試加上 () 來呼叫它時，Python 直譯器回報錯誤，說你不能把字串當成函式呼叫。（你可以藉由重開 REPL 讓 print 函式恢復正常。）
-
-可以想見，若你無意間使用 Python 內建的名稱，並指定新的值給它，這可能會引起一些困擾。
 
 ### Python 變數的命名規則
 
