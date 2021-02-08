@@ -94,55 +94,6 @@ Type "help()" for more information.
 
 可以發現 Python 直譯器解讀了你輸入的程式，並自動算出答案。
 
-現在，照 REPL 提示所說的輸入 ```help()```：
-
-```
->>> help()
-Welcome to MicroPython on the micro:bit!
-
-Try these commands:
-  display.scroll('Hello')
-  running_time()
-  sleep(1000)
-  button_a.is_pressed()
-What do these commands do? Can you improve them? HINT: use the up and down
-arrow keys to get your command history. Press the TAB key to auto-complete
-unfinished words (so 'di' becomes 'display' after you press TAB). These
-tricks save a lot of typing and look cool!
-
-Explore:
-Type 'help(something)' to find out about it. Type 'dir(something)' to see what
-it can do. Type 'dir()' to see what stuff is available. For goodness sake,
-don't type 'import this'.
-
-Control commands:
-  CTRL-C        -- stop a running program
-  CTRL-D        -- on a blank line, do a soft reset of the micro:bit
-  CTRL-E        -- enter paste mode, turning off auto-indent
-
-For a list of available modules, type help('modules')
-
-For more information about Python, visit: http://python.org/
-To find out about MicroPython, visit: http://micropython.org/
-Python/micro:bit documentation is here: https://microbit-micropython.readthedocs.io/
-```
-
-這是 micro:bit 的 MicroPython 內建的訊息，包含一些簡單的指引。注意到這兒也提到了 Ctrl+C 和 Ctrl+D，前者是用來中斷 micro:bit 目前執行的程式（程式執行時不會出現前面的提示），而 Ctrl+D 是用來強迫 micro:bit 重開機，以便重新測試程式。
-
-現在試試 ```help("modules")```：
-
-```
->>> help("modules")
-__main__          math              os                ucollections
-audio             microbit          radio             urandom
-builtins          micropython       speech            ustruct
-gc                music             sys               utime
-machine           neopixel          uarray
-Plus any modules on the filesystem
-```
-
-現在 REPL 列出了 MicroPython 中的所有模組（module），每一個都代表一些特定的程式功能。之後我們會看到它們是什麼，以及要如何使用。
-
 ## Python 基礎：運算式
 
 在 Python 中，程式碼可分為兩類：**陳述（statement）**與**運算式（expression）**。這兩者都會執行某個功能，但運算式本身也代表某個值，比如前面的 ```1 + 2``` 會得到 ```3```。
@@ -308,9 +259,9 @@ Traceback (most recent call last):
 NameError: name 'a' isn't defined
 ```
 
-現在產生了錯誤，說名稱 a 不存在。這是因為重開 REPL 後，變數 a 就在記憶體裡消失了。
+現在產生了錯誤，說名稱 a 未定義。這是因為重開 REPL 後，變數 a 就在記憶體裡消失了。
 
-後面在執行完整的程式時，每次重新執行的效果就等同於重新啟動 REPL，所以你必須在程式裡正確的地方宣告變數，後面的程式使用它時才不會遇到問題。
+後面我們在執行完整的程式時，每次重新執行的效果就等同於重新啟動 REPL，所以你得在程式裡適當的地方宣告變數，後面的程式使用它時才不會遇到問題。
 
 ### Python 變數是個「路牌」
 
@@ -333,9 +284,7 @@ NameError: name 'a' isn't defined
 
 上面 a 一開始是整數，後來變成字串了。事實上 Python 變數可以指向各種東西，其彈性
 
-> 當然，整數 1 和 2 等等是特例，它們是 Python 一開始就擁有的資料。有些資料是由使用者在執行程式期間建立的。
-
-
+> 當然，整數 1 和 2 等等是特例，它們是 Python 一開始就擁有的資料。有些資料是由使用者在執行程式期間建立的。這些資料
 
 ### Python 變數的命名規則
 
@@ -349,7 +298,8 @@ Python 變數的命名非常自由，除了不能用數字開頭以外，可以�
 
 Python 變數名稱也支援 Unicode，因此使用中文、日文或各國語言都是可行的。使用非 Unicode 特殊字元會產生錯誤。不過，一般習慣上還是會以英數為主，而且最好能清楚反映變數本身的用途。
 
-最後就是和前面提過的一樣，最好不要使用 Python 各種內建功能的名稱，否則你會意外覆蓋掉原有的功能。若真的非用不可，可以試著在該名稱前或後加上底線，如此一來就會被 Python 視為不同的名稱了。
+當然還有一個你不應該做的事，就是使用 Python 內建功能的名稱來當變數。這會導致那個名稱指向了你給予的資料，結果原本的功能就沒辦法用了，可能還會導致程式錯誤。
+的
 
 
 
