@@ -83,7 +83,7 @@ Type "help()" for more information.
 
 就是 REPL 的提示，類似 Windows 命令提示字元或 Unix 的終端機。它告訴我們 Python 直譯器的版本，並等待我們輸入指令。
 
-現在於 >>> 後面輸入 1 + 2，並按 Enter：
+現在於 >>> 後面輸入 ```1 + 2```，並按 Enter：
 
 ```
 MicroPython v1.13 on 2020-12-21; micro:bit v2.0.0-beta.3 with nRF52833
@@ -307,9 +307,223 @@ Python 變數的命名非常自由，除了不能用數字開頭以外，可以�
 42
 ```
 
-Python 變數名稱也支援 Unicode，因此使用中文、日文或各國語言當名稱都是可行的。使用非 Unicode 特殊字元會產生錯誤。不過，一般習慣上還是會以英數為主，而且最好能清楚反映變數本身的用途。
+Python 變數名稱也支援 Unicode，因此用中文、日文或各國語言建立變數名稱都是可行的。使用非 Unicode 特殊字元會產生錯誤。不過，一般習慣上還是會以英數為主，而且最好清楚反映變數本身的用途。
 
-當然還有一個你不該做的事，就是使用 Python 內建功能的名稱來當變數。這會導致那個名稱指向了你給予的資料，結果原本的功能就沒辦法用了，說不定還會導致程式錯誤。
+當然還有一件你不該做的事，就是拿 Python 內建功能的名稱來當變數。這會導致那個名稱指向了你給予的資料，結果等於是把原本的功能蓋掉了，說不定還會導致程式錯誤。
 
-（持續寫作中...）
+## Python 基礎：內建函式
+
+函式（function）是一個功能，就像數學函數一樣可以輸入資料給它，而函式會拿資料來做某件事。有的函式也會傳回處理完的結果。後面我們會再看到 Python 函式是怎麼定義的，但 Python 本身也提供了一系列內建函式，你不需要做任何事就能直接使用它們。
+
+最常用的內建函式之一是 print()，可以用來把資料輸出到 REPL 介面：
+
+```
+>>> print(42)
+42
+>>> print("Test")
+'Test'
+>>> print(2 ** 10)
+1024
+```
+
+要是 REPL 可以直接印出資料、變數和運算式，幹嘛多此一舉呢？這是因為在正式寫程式的時候，你不會寫在 REPL 裡面，而是直接讓 REPL 執行一個，而這時你若想輸出一些資料的話，就必須用 print() 函式。
+
+函式跟變數一樣有個名稱，這個名稱（路牌）會指向真正的函式：
+
+```
+>>> print
+<function>
+```
+
+若要「呼叫」函式，得在這個名稱後面加上小括號。
+
+如前面所提，如果你用 = 指派一個新的值給 print 這個名稱，原本的函式就找不到了（直到下次重新執行程式、或重開直譯器為止），所以這種行為是能免則免。
+
+相對的，也有些內建函式主要是讓你在 REPL 介面使用的，用來探索 Python 的功能。下面我們會一一講解。 
+
+## 印出文字 - 模組與函式
+
+好了，我們花了點時間講解一些 Python 基礎。現在先來看這能怎麼應用在 micro:bit 的功能吧。
+
+在 REPL 照順序輸入以下兩行指令：
+
+```
+>>> import microbit
+>>> microbit.display.show(42)
+```
+
+執行第二行時，。micro:bit 的 5x5 LED 顯示幕會依序顯示 4 和 2。
+
+接著：
+
+```
+>>> s = "Test"
+>>> microbit.display.show(s)
+```
+
+這回 micro:bit 顯示了變數 s 的內容，也就是 Test。
+
+你也可以直接在 ...show() 裡面寫運算式：
+
+```
+>>> microbit.display.show(2 ** 10)
+```
+
+但是，這個功能是個函數嗎？第一行的 import... 是在做什麼呢？
+
+### 探索 microbit 模組
+
+模組（module）代表 Python 中一系列特定的功能，歸類在某個名稱底下。在其他語言中，我們會稱模組為函式庫。例如，math 模組含有跟數學計算有關的功能，而 time 模組有些可用於計時和處理時間的功能。
+
+如前面提過的，micro:bit 的 Python（MicroPython）是經過精簡的版本，所以它的模組不會像正規 Python 那麼多和完整，也有些模組是特別針對開發板的硬體功能而設計。不過，使用方式是完全一樣的。
+
+在 micro:bit 上，**microbit** 模組囊括了 micro:bit 絕大部分的硬體功能。現在我們來看看它裡面有什麼東西。
+
+首先要「匯入」microbit 模組：
+
+```
+>>> import microbit
+```
+
+你可以想像這是在把模組載入到記憶體中，雖然實際上這更像是在建立一個變數名稱 microbit，它會指向一系列功能。當我們使用這個名字時，Python 會去系統中尋找這模組的檔案，並執行當中的程式功能。
+
+匯入模組以後，就可以用 help() 函式來調查它的內容：
+
+```
+>>> help(microbit)
+object <module 'microbit'> is of type module
+  __name__ -- microbit
+  Image -- <class 'MicroBitImage'>
+  Sound -- <class 'MicroBitSound'>
+  SoundEvent -- <class 'MicroBitSoundEvent'>
+  display -- <MicroBitDisplay>
+  button_a -- <MicroBitButton>
+  button_b -- <MicroBitButton>
+  accelerometer -- <MicroBitAccelerometer>
+  compass -- <MicroBitCompass>
+  speaker -- <MicroBitSpeakerPin>
+  microphone -- <MicroBitMicrophone>
+  audio -- <module 'audio'>
+  i2c -- <MicroBitI2C>
+  uart -- <MicroBitUART>
+  spi -- <MicroBitSPI>
+  reset -- <function>
+  sleep -- <function>
+  running_time -- <function>
+  panic -- <function>
+  temperature -- <function>
+  set_volume -- <function>
+  ws2812_write -- <function>
+  pin0 -- <MicroBitTouchPin>
+  pin1 -- <MicroBitTouchPin>
+  pin2 -- <MicroBitTouchPin>
+  pin3 -- <MicroBitAnalogDigitalPin>
+  pin4 -- <MicroBitAnalogDigitalPin>
+  pin5 -- <MicroBitDigitalPin>
+  pin6 -- <MicroBitDigitalPin>
+  pin7 -- <MicroBitDigitalPin>
+  pin8 -- <MicroBitDigitalPin>
+  pin9 -- <MicroBitDigitalPin>
+  pin10 -- <MicroBitAnalogDigitalPin>
+  pin11 -- <MicroBitDigitalPin>
+  pin12 -- <MicroBitDigitalPin>
+  pin13 -- <MicroBitDigitalPin>
+  pin14 -- <MicroBitDigitalPin>
+  pin15 -- <MicroBitDigitalPin>
+  pin16 -- <MicroBitDigitalPin>
+  pin19 -- <MicroBitDigitalPin>
+  pin20 -- <MicroBitDigitalPin>
+  pin_logo -- <MicroBitTouchOnlyPin>
+  pin_speaker -- <MicroBitDigitalPin>
+```
+
+另一個類似的方式是使用 dir() 函式：
+
+```
+>>> dir(microbit)
+['__class__', '__name__', 'Image', 'Sound', 'SoundEvent', 'accelerometer', 'audio', 'button_a', 'button_b', 'compass', 'display', 'i2c', 'microphone', 'panic', 'pin0', 'pin1', 'pin10', 'pin11', 'pin12', 'pin13', 'pin14', 'pin15', 'pin16', 'pin19', 'pin2', 'pin20', 'pin3', 'pin4', 'pin5', 'pin6', 'pin7', 'pin8', 'pin9', 'pin_logo', 'pin_speaker', 'reset', 'running_time', 'set_volume', 'sleep', 'speaker', 'spi', 'temperature', 'uart', 'ws2812_write']
+```
+
+如果你想知道一個模組（或者模組內的功能）底下有什麼東西，又覺得花時間開文件麻煩的話，可以很快用 help() 或 dir() 查一下。
+
+現在，micro:bit LED 顯示幕的相關功能都放在 microbit 模組的 display 項目下。我們可以查查看它是什麼：
+
+```
+>>> help(microbit.display)
+object <MicroBitDisplay> is of type MicroBitDisplay
+  get_pixel -- <function>
+  set_pixel -- <function>
+  show -- <function>
+  scroll -- <function>
+  clear -- <function>
+  on -- <function>
+  off -- <function>
+  is_on -- <function>
+  read_light_level -- <function>
+```
+
+microbit.display（用句號連接）是個物件，它本身也有一些功能，包括 show() 和其他幾個函式。之後我們會再談物件是什麼。
+
+因此，若你想使用上面的 show() 函式來顯示資料，你得連同模組跟物件的名稱來呼叫它：
+
+```
+>>> microbit.display.show("Show something")
+```
+
+> micro:bit 的 LED 顯示幕只能顯示英文、數字和一些標點符號，不支援中文或全形符號等等。
+
+你甚至可試著呼叫其他函式：
+
+```
+>>> microbit.display.scroll("Show something")
+```
+
+你應該會發現，scroll() 正如其名，能在 LED 幕捲動顯示文字，使之變成跑馬燈。
+
+### 用草稿碼的方式執行程式
+
+現在，我們要把上面的幾行程式合併起來，讓 micro:bit 能一口氣全部執行。
+
+關閉 REPL 介面、切回寫程式的介面，清掉原本的程式和換成以下內容：
+
+```python
+import microbit
+
+microbit.display.scroll("Hello World!")
+```
+
+確定編輯器已與 micro:bit 連線，然後按 **Flash** 上傳程式。
+
+跑馬燈跑完後，你可以按 micro:bit 背面的 reset（重置）鈕來重新啟動板子。你會發現 micro:bit 再次執行了同一支程式，不再需要我們手動輸入。
+
+> 但 micro:bit 是怎麼執行程式的呢？事實上，你的程式會轉成一個文字檔 main.py 並儲存在 micro:bit 上。當 micro:bit 啟動時，它就會尋找並執行這個檔案的內容。若你按編輯器的 **Load/Save**，就可以瀏覽板子的檔案系統：
+
+![1](https://user-images.githubusercontent.com/44191076/107311147-c1103380-6ac8-11eb-9a09-df0bff8bd5f8.png)
+
+> 可以看到板子上確實有一個 main.py，而這個介面也允許你上傳 .hex 或 .py 檔。.py 是標準的 Python 草稿碼副檔名；這表示你也可以用一般的 Python 編輯器寫程式，儲存成 main.py，然後手動上載到 micro:bit 上。你甚至能藉此上傳額外的模組檔案，但這就是比較進階的主題了。
+
+### 匯入模組的其他方式
+
+你可能會覺得，為了使用模組的某個功能，就得寫一長串名稱，未免太麻煩了。
+
+這時，你可以選擇只「匯入」模組底下的某樣東西：
+
+```python
+from microbit import display
+
+display.scroll("Hello World!")
+```
+
+上面的程式從 microbit 模組單獨匯入 display 物件，於是我們就能直接使用 display 名稱了。（但是你不能寫 ```from microbit.display import scroll```，因為 display 本身不是模組，不適用於這種語法。）要注意的是，現在 microbit 這名稱並沒有被匯入，所以沒辦法使用。
+
+除此以外，microbit 模組內還有很多其他東西。在網路上的教材中，很常看到會用以下的方式載入 microbit 模組下的所有功能：
+
+```python
+from microbit import *
+```
+
+這麼一來，你就能跳過 microbit 名稱和使用它底下的任何東西了。但在一般的 Python 程式設計中，這樣反而不見得是好主意，因為你有可能無意間載入了太多功能，或者有兩個模組的子功能具有同樣的名稱（因此有一邊會蓋掉另一邊）。所以在本教材中，我們還是會很明確的寫出我們要匯入什麼。
+
+
+
 
