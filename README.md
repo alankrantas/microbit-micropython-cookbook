@@ -4,60 +4,65 @@
 
 See also [BBC micro:bit MicroPython documentation](https://microbit-micropython.readthedocs.io/en/latest/index.html#)
 
-This is the collection of my notes, tricks and experiments on BBC micro:bit and MicroPython. This guide has bee upgraded for micro:bit V2; most of them are compatible with V1 but there would be limitations.
+This is the collection of notes, tricks and experiments on BBC micro:bit V2 and MicroPython.
 
-## Something About micro:bit's MicroPython
+## About micro:bit's MicroPython
 
-micro:bit's MicroPython is developed by Damien George which is based on Python 3.4. So basically all built-in features in and before Python 3.4 can be used on micro:bit.
+micro:bit's MicroPython is developed by Damien George. Like all other MicroPython variants, this is based on Python 3.4 and has most of the built-ins in a standard CPython 3.4. Of course, this also means features from newer Python and a lot of modules (built-in libraries) are unavaliable. There are also modules designed specifically for micro:bit or general microcontrollers. 
 
-Since MicroPython is a dynamic language like Python, it requires more memory than other embedded langauges. But this is no longer an big issue for V2 which has 128k RAM instead of 16K on V1. It is also possible to run recursion algorithm without getting errors.
+As MicroPython is a dynamic/interpreted language like CPython, it is slower than Arduino's C++ and requires more memory. It is very easily to run out of memory on micro:bit V1 (which has only 16 KB RAM). For micro:bit V2 (128 KB RAM) this is no longer a big problem.
 
-However, Bluetooth support are still unavailable in both version of firmwares.
+Nevertheless, Bluetooth support are still unavailable in both V1/V2 version.
 
 ## Ask Help From REPL
 
-REPL (Read-Evaluate-Print-Loop) or "Serial" in the official editor is a very useful testing tool. You may need to press Ctrl + C to force the device to stop its current program and enter REPL mode.
+REPL (Read-Evaluate-Print-Loop) or "Serial" in the official editor is a very useful testing tool. You may need to press Ctrl + C in the REPL screen to force the device enter REPL mode.
+
+Get some help:
+
+```
+> help()
+```
 
 List all modules:
 
-```python
-help('modules')
+```
+> help('modules')
 ```
 
-To see what's in a module or submodule/function/attribute:
+To see what's inside a module or submodule/function/attribute:
 
-```python
-import microbit
-
-help(microbit)  # display help content if there's any
-help(microbit.pin0)
-dir(microbit)  # list all members in this namespace
-dir(microbit.pin0)
+```
+> import microbit
+> help(microbit)
+> help(microbit.pin0)
+> dir(microbit)
+> dir(microbit.pin0)
 ```
 
 ## Easter Eggs
 
 Try to type these in the REPL:
 
-```python
-import this
-import antigravity
-import love
+```
+> import this
+> import antigravity
+> import love
 ```
 
 ## Import * is a Bad Idea
 
-in a lot of examples you may see
+In a lot of examples you may see
 
 ```python
 from microbit import *
 ```
 
-Import does not "read" a module or function into memory; what it really does is to add variables (name tags) pointing to all the stuff under module "microbit". So you can use these names directly without writing ```microbit.something```.
+Import does not "read" a module or function into memory; what it really does is to add variables pointing to all the stuff under module "microbit". So you can use these names directly without writing ```microbit.something```.
 
-But using * to import everything is still a bad habit; in standard Python you might accidentally import something with same names and causing conflict. 
+But using * to import everything is still a bad practice. If you do this in standard Python, you might accidentally import things with conflicted names. 
 
-Instead, the better and clearer way is to write it like this:
+Instead, you should always explicitly import what you need:
 
 ```python
 from microbit import pin0, display, sleep
@@ -71,7 +76,7 @@ from micropython import mem_info
 print(mem_info(1))
 ```
 
-You can also force micro:bit to free memory from time to time with garbage collection:
+You can also use garbage collection to free some memory:
 
 ```python
 import gc
@@ -80,7 +85,7 @@ gc.enable()  # enable automatic memory recycle
 gc.collect()  # force memory recycle
 ```
 
-## Classic Blinky
+## Classic Blinky (LED screen)
 
 ```python
 from microbit import display, Image, sleep
@@ -92,110 +97,46 @@ while True:
     sleep(1000)
 ```
 
-## Roll a Dice
+## Classic Blinky (LED on pin 0)
 
-You might need to shake it harder to see changes. The gesture detection is not idel in micro:bit's MicroPython.
-
-```python
-from microbit import display, Image, accelerometer, sleep
-from random import randint
-
-dices = {  # dictionary of 5x5 dice images
-    1: '00000:00000:00900:00000:00000',
-    2: '00900:00000:00000:00000:00900',
-    3: '90000:00000:00900:00000:00009',
-    4: '90009:00000:00000:00000:90009',
-    5: '90009:00000:00900:00000:90009',
-    6: '90009:00000:90009:00000:90009',
-}
-
-while True:
-    
-    if accelerometer.is_gesture('shake'):
-        display.show(Image(dices[randint(1, 6)]))
-        sleep(500)
-```
-
-## Fill LED Display
-
-Light up every LEDs in a specific brightness level (default max):
+This version controls an external LED connected between pin 0 and GND and uses ```time.sleep()``` module instead of ```microbit.sleep()```.
 
 ```python
-from microbit import display, Image, sleep
-
-def fillScreen(b=9):  # fill screen function, b = brightness (0-9)
-    display.show(Image(':'.join([str(b) * 5] * 5)))
-
+from microbit import pin0
+import time
 
 while True:
-    # blink screen twice
-    for _ in range(2):
-        fillScreen()  # default = max brightness
-        sleep(250)
-        display.clear()
-        sleep(250)
-    
-    sleep(500)
-    
-    # fade in
-    for i in range(10):
-        fillScreen(i)
-        sleep(75)
-    
-    # fade out
-    for i in reversed(range(10)):
-        fillScreen(i)
-        sleep(75)
-        
-    sleep(500)
+    pin0.write_digital(1)
+    time.sleep(0.5)
+    pin0.write_digital(0)
+    time.sleep(0.5)
 ```
 
-## LED Bar Graph
-
-A 25-level LED progress bar.
-
-```python
-from microbit import display, Image, sleep
-
-def plotBarGraph(value, max_value, b=9):
-    counter = 0
-    display.clear()
-    for y in reversed(range(5)):
-        for x in range(5):
-            if value / max_value > counter / 25:
-                display.set_pixel(x, y, b)
-            counter += 1
-
-while True:
-    plotBarGraph(display.read_light_level(), 255)
-    sleep(50)
-```
-
-Since read_light_level() uses LEDs themselves as light sensors (see [this video](https://www.youtube.com/watch?v=TKhCr-dQMBY)), The LED screen would flicker a bit.
+For both micro:bit V1/V2 you don't really need a resistor to protect the LED. The voltage and current from any pins (except the 3V pin) are low enough.
 
 ## Blinky LEDs Without Using Sleep
 
-The two LEDs would blink at different intervals.
+Using the ```time``` module, the two LEDs on the LED screen would blink at different intervals.
 
 ```python
 from microbit import display
-import utime
+import time
 
-delay1, delay2 = 1000, 300
-since1, since2 = utime.ticks_ms(), utime.ticks_ms()
+delay1, delay2 = 500, 400
+since1, since2 = time.ticks_ms(), time.ticks_ms()
 
 
 while True:
     
-    now = utime.ticks_ms()
+    now = time.ticks_ms()
     
-    if utime.ticks_diff(now, since1) >= delay1:  # toogle LED (0, 0)
+    if time.ticks_diff(now, since1) >= delay1:  # toogle LED (0, 0)
         display.set_pixel(0, 0, 9 if display.get_pixel(0, 0) == 0 else 0)
-        since1 = utime.ticks_ms()
+        since1 = time.ticks_ms()
     
-    if utime.ticks_diff(now, since2) >= delay2:  # toogle LED (4, 4)
+    if time.ticks_diff(now, since2) >= delay2:  # toogle LED (4, 4)
         display.set_pixel(4, 4, 9 if display.get_pixel(4, 4) == 0 else 0)
-        since2 = utime.ticks_ms()
+        since2 = time.ticks_ms()
 ```
 
 ## A More Convenient Pin Class?
@@ -321,12 +262,93 @@ Do not use servos and buzzers at the same time. They require different PWM frequ
 
 micro:bit V2 can output 190 mA from its 3V pin, which is enough for most hobby servos.
 
+## Roll a Dice
+
+Define dice images in a dictionary, and retrieve one using a random number when the shake gesture detected.
+
+```python
+from microbit import display, Image, accelerometer, sleep
+from random import randint
+
+dices = {  # dictionary of 5x5 dice images
+    1: '00000:00000:00900:00000:00000',
+    2: '90000:00000:00000:00000:00009',
+    3: '90000:00000:00900:00000:00009',
+    4: '90009:00000:00000:00000:90009',
+    5: '90009:00000:00900:00000:90009',
+    6: '90009:00000:90009:00000:90009',
+    }
+
+while True:
+    if accelerometer.was_gesture('shake'):  # if user has shaked micro:bit
+        display.show(Image(dices[randint(1, 6)]))  # get a image in random
+```
+
+## Fill LED Display
+
+Light up every LEDs in a specific brightness level (default max):
+
+```python
+from microbit import display, Image, sleep
+
+def fillScreen(b=9):  # fill screen function, b = brightness (0-9)
+    display.show(Image(':'.join([str(b) * 5] * 5)))
+
+
+while True:
+    # blink screen twice
+    for _ in range(2):
+        fillScreen()  # default = max brightness
+        sleep(250)
+        display.clear()
+        sleep(250)
+    
+    sleep(500)
+    
+    # fade in
+    for i in range(10):
+        fillScreen(i)
+        sleep(75)
+    
+    # fade out
+    for i in reversed(range(10)):
+        fillScreen(i)
+        sleep(75)
+        
+    sleep(500)
+```
+
+## LED Bar Graph
+
+A 25-level LED progress bar, similar to the one you can use in the MakeCode JavaScript editor.
+
+```python
+from microbit import display, Image, sleep
+
+def plotBarGraph(value, max_value, b=9):
+    order = (23, 21, 20, 22, 24,
+             18, 16, 15, 17, 19,
+             13, 11, 10, 12, 14,
+             8, 6, 5, 7, 9,
+             3, 1, 0, 2, 4,)
+    counter = 0
+    display.clear()
+    for y in range(5):
+        for x in range(5):
+            if value / max_value > order[counter] / 25:
+                display.set_pixel(x, y, b)
+            counter += 1
+
+while True:
+    plotBarGraph(display.read_light_level(), 255)
+    sleep(50)
+```
+
+The LED screen may flicker because ```read_light_level()``` uses LEDs themselves as light sensors (see [this video](https://www.youtube.com/watch?v=TKhCr-dQMBY)).
 
 ## Get Pitch and Roll Degrees
 
-Similar to functions in micro:bit MakeCode. Be noted that these function cannot tell if the board is facing up or down. Probably need to use z axis readings for that.
-
-Upload code and switch to REPL, you should see the output.
+This is also something exists in MakeCode but not MicroPython. Be noted that the results would be outputed in the REPL console.
 
 ```python
 from microbit import accelerometer, sleep
@@ -354,13 +376,13 @@ while True:
 This code is based on Adafruit's example with adjustable brightness level.
 
 ```python
-from microbit import pin0, sleep
+from microbit import pin0, sleep  # connect to pin 0
 from neopixel import NeoPixel
 from micropython import const
 
-led_num      = const(12)  # number of NeoPixels
+led_num      = const(12)   # number of NeoPixels
 led_maxlevel = const(128)  # light level (0-255)
-led_delay    = const(0)  # NeoPixels cycle delay
+led_delay    = const(0)    # NeoPixels cycle delay
 
 np = NeoPixel(pin0, led_num)
 
@@ -381,20 +403,18 @@ def wheel(pos):
     b = round(b * led_maxlevel / 255)
     return (r, g, b)
 
-def rainbow_cycle():
-    global cycle
+def rainbow_cycle(pos):
     for i in range(led_num):
-        rc_index = (i * 256 // led_num) + cycle
+        rc_index = (i * 256 // led_num) + pos
         np[i] = wheel(rc_index & 255)
     np.show()
     sleep(led_delay)
-    cycle = (cycle + 1) & 255
+    
 
-
-cycle = 0
-
+pos = 0
 while True:
-    rainbow_cycle()
+    rainbow_cycle(pos)
+    pos = (pos + 1) & 255
 ```
 
 ## Calcualte Fibonacci Sequence
@@ -416,7 +436,21 @@ print(f)
 display.scroll(f)
 ```
 
-Why not a recursive version as well? Because the recursion depth is limited on micro:bits (V2 is a lot better than V1 but still quite limited) so it's not that ptractical to do so.
+Below is the recursive version, which is a lot slower and you may get ```RuntimeError: maximum recursion depth exceeded``` for a bigger number.
+
+```python
+from microbit import display
+
+def Fibonacci(n):
+    if n < 2:
+        return n
+    return Fibonacci(n - 1) + Fibonacci(n - 2)
+
+
+f = Fibonacci(24)
+print(f)
+display.scroll(f)
+```
 
 ## Calcuate a List of Prime Numbers
 
@@ -442,123 +476,6 @@ print(primes)
 for prime in primes:
     display.scroll(prime)
 ```
-
-## Solving N-Queens Problems
-
-[Eight queens puzzle](https://en.wikipedia.org/wiki/Eight_queens_puzzle)
-
-This one use recursion, and the recursion depth is not that big to be run on micro:bit V2. Of course, N > 10 will take like forever to calculate.
-
-```python
-import utime
-
-maxQueens = 8  # N 
-queens = [0] * maxQueens
-
-def verifyPos(checkPos, newPos):
-    for tmpPos in range(checkPos):
-        if queens[tmpPos] == newPos or abs(tmpPos - checkPos) == abs(queens[tmpPos] - newPos):
-            return False
-    return True
-
-def placeQueen(columnPos, maxNum):
-    global counter, queens
-    if columnPos == maxNum:
-        counter += 1
-        print(counter, queens)
-    else:
-        for newPos in range(1, maxNum + 1):
-            if verifyPos(columnPos, newPos):
-                queens[columnPos] = newPos
-                placeQueen(columnPos + 1, maxNum)
-
-counter = 0
-startTime = utime.ticks_ms()
-placeQueen(0, maxQueens)
-timeDiff = utime.ticks_diff(utime.ticks_ms(), startTime) / 1000
-
-print(counter, 'result(s) in', timeDiff, 'sec')
-```
-
-## Conway's Game of Life on 5x5 LED Display
-
-[Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
-
-The program automatically reset the board when the number of cells dosen't change for a while.
-
-```python
-from microbit import display, sleep
-from machine import reset
-from random import randint
-
-# Rule for B3/S23
-# see https://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
-Born    = '3'
-Sustain = '23'
-
-matrix = [bytearray((1 if randint(0, 2) == 0 else 0) 
-            for _ in range(5)) for _ in range(5)]
-
-def display_matrix():
-    for i in range(5):
-        for j in range(5):
-            display.set_pixel(i, j, 9 if matrix[i][j] else 0)
-
-def calculate_next_gen():
-    global matrix
-    matrix_buf = [bytearray(0 for _ in range(5)) for _ in range(5)]
-    for i in range(5):
-        for j in range(5):
-            cell_num = 0
-            for k in range(3):
-                for l in range(3):
-                    x = i + k - 1
-                    y = j + l - 1
-                    if x < 0:
-                        x = 5 - 1
-                    elif x >= 5:
-                        x = 0 
-                    if y < 0:
-                        y = 5 - 1
-                    elif y >= 5:
-                        y = 0   
-                    if matrix[x][y]:
-                        cell_num += 1
-            if not matrix[i][j]:
-                matrix_buf[i][j] = 1 if str(cell_num) in Born else 0
-            else:
-                cell_num -= 1
-                matrix_buf[i][j] = 1 if str(cell_num) in Sustain else 0
-    matrix = matrix_buf
-
-generation = 0
-cell_count = 0
-prev_cell_count = 0
-cell_repeat = 0
-
-while True:
-    
-    calculate_next_gen()
-    cell_count = sum(map(sum, matrix))
-    print(cell_count, 'cell(s)')
-    display_matrix()
-    
-    if prev_cell_count == cell_count:
-        cell_repeat += 1
-    else:
-        cell_repeat = 0
-    prev_cell_count = cell_count
-    
-    if cell_count == 0 or cell_repeat >= 7:
-        print('Resetting...')
-        print('')
-        sleep(500)
-        reset()
-        
-    sleep(50)
-```
-
-The code would reset the micro:bit if there's no cell left or the cells are stable. Although sometimes it may be locked into a state with the same alternating cell numbers and need manual reset.
 
 ## Morse Code Machine
 
@@ -648,16 +565,19 @@ If there's no signal received the strength data would be set as zero.
 from microbit import display, sleep
 import radio
 
-def plotBarGraph(value, maxValue, b=9):
-    bar = value / maxValue
-    values = ((0.96, 0.88, 0.84, 0.92, 1.00), 
-              (0.76, 0.68, 0.64, 0.72, 0.80),
-              (0.56, 0.48, 0.44, 0.52, 0.60), 
-              (0.36, 0.28, 0.24, 0.32, 0.40), 
-              (0.16, 0.08, 0.04, 0.12, 0.20))
+def plotBarGraph(value, max_value, b=9):
+    order = (23, 21, 20, 22, 24,
+             18, 16, 15, 17, 19,
+             13, 11, 10, 12, 14,
+             8, 6, 5, 7, 9,
+             3, 1, 0, 2, 4,)
+    counter = 0
+    display.clear()
     for y in range(5):
         for x in range(5):
-            display.set_pixel(x, y, b if bar >= values[y][x] else 0)
+            if value / max_value > order[counter] / 25:
+                display.set_pixel(x, y, b)
+            counter += 1
 
 
 radio.config(group=42, power=7)
