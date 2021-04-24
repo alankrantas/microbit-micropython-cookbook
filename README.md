@@ -2,9 +2,9 @@
 
 ![1](https://user-images.githubusercontent.com/44191076/79871966-c0ae8b00-8417-11ea-8255-cbc681d12b8d.jpg)
 
-See also [BBC micro:bit MicroPython documentation](https://microbit-micropython.readthedocs.io/en/latest/index.html#)
-
 This is the collection of notes, tricks and experiments on BBC micro:bit V2 and MicroPython.
+
+See also [BBC micro:bit V2 MicroPython documentation](https://microbit-micropython.readthedocs.io/en/v2-docs/index.html)
 
 ## About micro:bit's MicroPython
 
