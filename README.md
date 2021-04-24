@@ -546,7 +546,7 @@ while True:
     print('Message converted:\n', morse_str)
     
     for code in morse_str:
-        music.pitch(440)
+        music.pitch(392)
         display.show(Image.TARGET)
         sleep(morse_delay * (3 if code == '-' else 1))
         music.stop()
