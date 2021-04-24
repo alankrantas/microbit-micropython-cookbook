@@ -1,6 +1,6 @@
 ## Simon Game for BBC micro:bit V2
 
-The game is inspired by [Simon electronic games](https://en.wikipedia.org/wiki/Simon_(game)) and is written in MicroPython (not compatible to micro:bit V1), using the accelerometer to sense gestures to the four directions and has buzzer sound effects.
+The game is inspired by [Simon electronic games](https://en.wikipedia.org/wiki/Simon_(game)) and is written in MicroPython (not compatible to micro:bit V1), using the accelerometer to sense directions and has buzzer sound effects.
 
 ```
 How to play:
