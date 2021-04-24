@@ -148,7 +148,7 @@ from microbit import pin1, pin2, sleep
 
 class Pin:
     
-    __slots__ = ['pin']  # not to use dictionary to store attributes in order to save memory
+    __slots__ = ['pin']  # not to use dictionary to store attributes in the class to save memory
     
     def __init__(self, pin):
         self.pin = pin
@@ -236,31 +236,6 @@ while True:
     print(translate(lightLevel, 0, 255, 0, 1023))
     sleep(100)
 ```
-
-## Servo Control
-
-Note: currently (as for v2 beta) pin.set_analog_period throws ValueError and has been fixed in a future release.
-
-```python
-from microbit import pin0, sleep
-
-def servoWrite(pin, degree):
-    pin.set_analog_period(20)
-    pin.write_analog(round((degree * 92 / 180 + 30), 0))
-
-
-servoPin = pin0
-
-while True:
-    servoWrite(servoPin, 0)
-    sleep(1000)
-    servoWrite(servoPin, 180)
-    sleep(1000)
-```
-
-Do not use servos and buzzers at the same time. They require different PWM frequencies and most microcontrollers can only use one frequency accross all pins at a time.
-
-micro:bit V2 can output 190 mA from its 3V pin, which is enough for most hobby servos.
 
 ## Roll a Dice
 
@@ -371,6 +346,36 @@ while True:
     print('Pitch:', rotationPitch(), ' / roll:', rotationRoll())
     sleep(100)
 ```
+
+## Servo Control
+
+```python
+from microbit import pin0, sleep
+
+class Servo:  # define a servo class
+    def __init__(self, pin, degree=90):
+        self.pin = pin
+        self.degree = degree
+        self.write(degree)
+    
+    def write(self, degree):
+        self.pin.set_analog_period(20)
+        self.pin.write_analog(round((degree * 92 / 180 + 30), 0))
+
+
+servo = Servo(pin0)  # servo object
+
+while True:
+    servo.write(0)
+    sleep(1000)
+    servo.write(180)
+    sleep(1000)
+```
+
+Do not use servos and buzzers at the same time. They require different PWM frequencies and most microcontrollers can only use one frequency accross all pins at a time.
+
+micro:bit V2 can output 190 mA from its 3V pin, which is enough for most hobby servos.
+
 ## NeoPixel Rainbow/Rotation Effect
 
 This code is based on Adafruit's example with adjustable brightness level.
