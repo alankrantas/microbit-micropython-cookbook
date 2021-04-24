@@ -35,6 +35,16 @@ dir(microbit)  # list all members in this namespace
 dir(microbit.pin0)
 ```
 
+## Easter Eggs
+
+Try to type these in the REPL:
+
+```python
+import this
+import antigravity
+import love
+```
+
 ## Import * is a Bad Idea
 
 in a lot of examples you may see
@@ -145,24 +155,19 @@ while True:
 A 25-level LED progress bar.
 
 ```python
-from microbit import display, sleep
+from microbit import display, Image, sleep
 
-# bar graph function
-def plotBarGraph(value, maxValue, b=9):
-    bar = value / maxValue
-    values = ((0.96, 0.88, 0.84, 0.92, 1.00), 
-              (0.76, 0.68, 0.64, 0.72, 0.80),
-              (0.56, 0.48, 0.44, 0.52, 0.60), 
-              (0.36, 0.28, 0.24, 0.32, 0.40), 
-              (0.16, 0.08, 0.04, 0.12, 0.20))
-    for y in range(5):
+def plotBarGraph(value, max_value, b=9):
+    counter = 0
+    display.clear()
+    for y in reversed(range(5)):
         for x in range(5):
-            display.set_pixel(x, y, b if bar >= values[y][x] else 0)
-
+            if value / max_value > counter / 25:
+                display.set_pixel(x, y, b)
+            counter += 1
 
 while True:
-    lightLevel = display.read_light_level()
-    plotBarGraph(lightLevel, 255)  # or plotBarGraph(lightLevel, 255, 9)
+    plotBarGraph(display.read_light_level(), 255)
     sleep(50)
 ```
 
