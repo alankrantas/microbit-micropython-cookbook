@@ -1,1 +1,1 @@
-# The Absolute Free MicroPython Guide for BBC micro:bit V2
+# The MicroPython Guide for BBC micro:bit V2
