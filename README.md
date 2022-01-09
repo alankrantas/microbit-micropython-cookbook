@@ -475,7 +475,6 @@ def find_primes(n):  # calculate primes up to n
                 primes.append(p_test)
     return primes
 
-
 primes = find_primes(50)
 print(primes)
 for prime in primes:
@@ -604,6 +603,8 @@ Due to some reason, the signal strength or RSSI changes very little regardless o
 If there's no signal received the strength data would be set as zero.
 
 ```python
+RADIO_CHANNEL = 42
+
 from microbit import display, sleep
 import radio
 
@@ -622,7 +623,7 @@ def plotBarGraph(value, max_value, b=9):
             counter += 1
 
 
-radio.config(group=42, power=7)
+radio.config(group=RADIO_CHANNEL, power=7)
 radio.on()
 
 while True:
