@@ -578,7 +578,7 @@ while True:
     
     if button_a.is_pressed():
         text = input('Enter your message: ')
-        if len(text) > 0:
+        if len(text) > 0 and len(text.strip()) > 0:
             to_be_send = text.strip()[:250]
             radio.send(to_be_send)
             print('YOU:', to_be_send)
