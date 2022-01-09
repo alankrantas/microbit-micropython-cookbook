@@ -18,6 +18,8 @@ motor_right_B.write_digital(0)
 motor_left_A.write_digital(0)
 motor_left_B.write_digital(0)
 
+display.show(Image.SQUARE)
+
 while True:
     direction = radio.receive()
     if direction == None:
