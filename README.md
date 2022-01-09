@@ -556,6 +556,43 @@ while True:
     print('')
 ```
 
+## Text-based Group Chat
+
+Load the code to at multiple micro:bits, each connected to a computer and enter the REPL mode. They will display any messages (250 characters max each) sent by other micro:bits on the same channel.
+
+In order to send message, press A and enter text after the prompt. (Some incoming messages may be lost when you are typing. So you can also treat this as actual radio and use [procedure words](https://en.wikipedia.org/wiki/Procedure_word).)
+
+```python
+RADIO_CHANNEL = 42
+
+from microbit import display, Image, button_a, sleep
+import radio
+
+radio.config(group=RADIO_CHANNEL, length=250, power=7)
+radio.on()
+
+print('Receiving messages...')
+print('Press A to send your message (max 250 characters each)')
+display.show(Image.RABBIT)
+
+while True:
+    
+    if button_a.is_pressed():
+        text = input('Enter your message: ')
+        if len(text) > 0:
+            to_be_send = text.strip()[:250]
+            radio.send(to_be_send)
+            print('YOU:', to_be_send)
+        else:
+            sleep(100)
+    
+    incoming = radio.receive()
+    if incoming != None:
+        print('MESSAGE:', incoming)
+        
+    sleep(50)
+```
+
 ## Radio Proximity Sensor
 
 Load the code to two micro:bits. They will detect each other's radio signal strength and show it as LED bar graph. Can be used as an indoor treasure hunt game.
