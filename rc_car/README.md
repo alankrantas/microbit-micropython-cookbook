@@ -34,11 +34,13 @@ If you have a micro:bit extension board that offer 5V output (either from USB co
 
 Copy the content of following MicroPython code into the [official Python editor](https://python.microbit.org/v/2), connect the board and flash it:
 
-* [Controller](https://github.com/alankrantas/microbit-micropython-cookbook/blob/master/rc_car/rc_controller.py)
-* [Car](https://github.com/alankrantas/microbit-micropython-cookbook/blob/master/rc_car/rc_car.py)
+* [Controller](https://github.com/alankrantas/microbit-micropython-cookbook/blob/master/rc_car/rc_controller.py) (to the V2 on the car)
+* [Car](https://github.com/alankrantas/microbit-micropython-cookbook/blob/master/rc_car/rc_car.py) (to a V2 or V1)
 
 In both scripts the ```RADIO_CHANNEL``` variable defines the radio channel shared between the controller and the car. Change it if you are going to operate near other people also using micro:bit's radio functions.
 
 ### Control
 
-Tilt the controller to different directions
+Tilt the controller to different directions. Direction arraws would show on both the controller and the car.
+
+The controller can be connected to any USB or battery power.
