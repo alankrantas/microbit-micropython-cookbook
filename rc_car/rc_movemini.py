@@ -1,3 +1,5 @@
+# For Kitronik's Move:mini
+
 RADIO_CHANNEL = 42  # radio channel: 0~255
 LIGHT_LEVEL = 128
 
