@@ -1,4 +1,4 @@
-# Simple micro:bit V2 remote control car
+# Simple micro:bit V2 remote control car (with a Move:mini version)
 
 Since the micro:bit V2 can output 300 mA instead of 90 mA from its 3V pin, you can actually build a motor car with a simple breakout, a L9110S H-bridge motor driver board and a generic, small 5V USB power bank.
 
@@ -36,6 +36,7 @@ Copy the content of following MicroPython code into the [official Python editor]
 
 * [Controller](https://github.com/alankrantas/microbit-micropython-cookbook/blob/master/rc_car/rc_controller.py) (to the V2 on the car)
 * [Car](https://github.com/alankrantas/microbit-micropython-cookbook/blob/master/rc_car/rc_car.py) (to a V2 or V1)
+* I also wrote a version for Kitronik's [Move:mini](https://github.com/alankrantas/microbit-micropython-cookbook/blob/master/rc_car/rc_movemini.py) with some NeoPixel light effects
 
 In both scripts the ```RADIO_CHANNEL``` variable defines the radio channel shared between the controller and the car. Change it if you are going to operate near other people also using micro:bit's radio functions.
 
