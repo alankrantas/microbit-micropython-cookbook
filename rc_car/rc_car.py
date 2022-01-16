@@ -19,7 +19,7 @@ motor_right_B.write_digital(0)
 motor_left_A.write_digital(0)
 motor_left_B.write_digital(0)
 
-display.show(Image.SQUARE)
+display.show(Image.HAPPY)
 
 while True:
     direction = radio.receive()
@@ -51,7 +51,7 @@ while True:
         motor_left_A.write_digital(0)
         motor_left_B.write_analog(SPEED)
     else:
-        display.show(Image.SQUARE)
+        display.show(Image.HAPPY)
         motor_right_A.write_digital(0)
         motor_right_B.write_digital(0)
         motor_left_A.write_digital(0)
