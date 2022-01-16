@@ -41,4 +41,4 @@ while True:
         display.show(Image.SQUARE)
         radio.send('stop')
         
-    sleep(250)
+    sleep(100)
