@@ -72,7 +72,7 @@ class MoveMini:
 car = MoveMini()
 
 while True:
-    sleep(5)
+    sleep(10)
     
     direction = radio.receive()
     if direction == None:
