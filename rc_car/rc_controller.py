@@ -38,7 +38,7 @@ while True:
         display.show(Image.ARROW_W)
         radio.send('right')
     else:
-        display.show(Image.SQUARE)
+        display.show(Image.DIAMOND)
         radio.send('stop')
         
     sleep(100)
