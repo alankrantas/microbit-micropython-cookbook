@@ -6,7 +6,7 @@ This is the collection of notes, tricks and experiments on BBC micro:bit V2 and 
 
 See also [BBC micro:bit V2 MicroPython documentation](https://microbit-micropython.readthedocs.io/en/v2-docs/index.html)
 
-Also there's a few projects:
+Also there are a few projects:
 
 * Simon Says game ([link](https://github.com/alankrantas/microbit-micropython-cookbook/tree/master/simon_game))
 * Simple micro:bit RC Car ([link](https://github.com/alankrantas/microbit-micropython-cookbook/tree/master/rc_car))
