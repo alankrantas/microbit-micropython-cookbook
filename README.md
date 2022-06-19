@@ -8,7 +8,7 @@ See also [BBC micro:bit V2 MicroPython documentation](https://microbit-micropyth
 
 Also there's a few projects:
 
-* Simon Says game ([link]([https://github.com/alankrantas/microbit-micropython-cookbook/tree/master/rc_car](https://github.com/alankrantas/microbit-micropython-cookbook/tree/master/simon_game)))
+* Simon Says game ([link](https://github.com/alankrantas/microbit-micropython-cookbook/tree/master/simon_game))
 * Simple micro:bit RC Car ([link](https://github.com/alankrantas/microbit-micropython-cookbook/tree/master/rc_car))
 
 ## About micro:bit's MicroPython
