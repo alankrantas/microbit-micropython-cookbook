@@ -419,16 +419,16 @@ micro:bit V2 can output 190 mA from its 3V pin, which is enough for most hobby s
 
 ## NeoPixel Rainbow/Rotation Effect
 
-This code is based on Adafruit's example with adjustable brightness level.
+This code is based on Adafruit's example with adjustable brightness level. Change the pin0 to other pins if needed.
 
 ```python
 from microbit import pin0, sleep  # connect to pin 0
 from neopixel import NeoPixel
 from micropython import const
 
-led_num      = const(12)   # number of NeoPixels
-led_maxlevel = const(128)  # light level (0-255)
-led_delay    = const(0)    # NeoPixels cycle delay
+led_num      = const(12)  # number of NeoPixels
+led_maxlevel = const(64)  # light level (0-255)
+led_delay    = const(5)   # NeoPixels cycle delay
 
 np = NeoPixel(pin0, led_num)
 
@@ -454,13 +454,13 @@ def rainbow_cycle(pos):
         rc_index = (i * 256 // led_num) + pos
         np[i] = wheel(rc_index & 255)
     np.show()
-    sleep(led_delay)
     
 
 pos = 0
 while True:
     rainbow_cycle(pos)
-    pos = (pos + 1) & 255
+    pos = (pos + 1) % 255
+    sleep(led_delay)
 ```
 
 ## Calcualte Fibonacci Sequence
