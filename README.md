@@ -6,6 +6,11 @@ This is the collection of notes, tricks and experiments on BBC micro:bit V2 and 
 
 See also [BBC micro:bit V2 MicroPython documentation](https://microbit-micropython.readthedocs.io/en/v2-docs/index.html)
 
+Also there's a few projects:
+
+* Simon Says game ([link]([https://github.com/alankrantas/microbit-micropython-cookbook/tree/master/rc_car](https://github.com/alankrantas/microbit-micropython-cookbook/tree/master/simon_game)))
+* Simple micro:bit RC Car ([link](https://github.com/alankrantas/microbit-micropython-cookbook/tree/master/rc_car))
+
 ## About micro:bit's MicroPython
 
 micro:bit's MicroPython is developed by Damien George. Like all other MicroPython variants, this is based on Python 3.4 and has most of the built-ins in a standard CPython 3.4. Of course, this also means features from newer Python and a lot of modules (built-in libraries) are unavaliable. There are also modules designed specifically for micro:bit or general microcontrollers. 
@@ -320,6 +325,42 @@ while True:
 ```
 
 The LED screen may flicker because ```read_light_level()``` uses LEDs themselves as light sensors (see [this video](https://www.youtube.com/watch?v=TKhCr-dQMBY)).
+
+## Tiny Two-Digit Display
+
+Display two 2x5 digits (range 0~99) on the 5x5 matrix. This is very similar to a MakeCode extension.
+
+```python
+from microbit import display, Image, sleep, temperature
+
+digits = {
+    '0': ('99', '99', '99', '99', '99'),
+    '1': ('09', '09', '09', '09', '09'),
+    '2': ('99', '09', '99', '90', '99'),
+    '3': ('99', '09', '99', '09', '99'),
+    '4': ('90', '90', '99', '09', '09'),
+    '5': ('99', '90', '99', '09', '99'),
+    '6': ('90', '90', '99', '99', '99'),
+    '7': ('99', '09', '09', '09', '09'),
+    '8': ('99', '99', '00', '99', '99'),
+    '9': ('99', '99', '99', '09', '09'),
+    ' ': ('00', '00', '00', '00', '00'),
+}
+
+def showDigits(value, b=9, fill_zero=False):
+    value = min(max(value, 0), 99)
+    d = ('{:02d}' if fill_zero else '{:2d}').format(value)
+    return Image(':'.join(
+        ['{}0{}'.format(digits[d[0]][i], digits[d[1]][i]).replace('9', str(b)) 
+         for i in range(5)]))
+
+
+while True:
+    display.show(showDigits(temperature(), fill_zero=True))
+    sleep(1000)
+```
+
+In showDigits(), parameter b is brightness (0~9) and fill_zero=True means numbers smaller than 10 will be displayed as 01, 02, 03...
 
 ## Get Pitch and Roll Degrees
 
