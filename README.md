@@ -9,6 +9,7 @@ See also [BBC micro:bit V2 MicroPython documentation](https://microbit-micropyth
 Also there are a few projects:
 
 * Simon Says game ([link](https://github.com/alankrantas/microbit-micropython-cookbook/tree/master/simon_game))
+* Shake It game ([link](https://github.com/alankrantas/microbit-micropython-cookbook/tree/master/shake_it))
 * Simple micro:bit RC Car ([link](https://github.com/alankrantas/microbit-micropython-cookbook/tree/master/rc_car))
 
 ## About micro:bit's MicroPython
