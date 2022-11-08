@@ -243,7 +243,7 @@ while True:
     sleep(100)
 ```
 
-## Roll a Dice
+## Roll a Die
 
 Define dice images in a dictionary, and retrieve one using a random number when the shake gesture detected.
 
@@ -251,7 +251,7 @@ Define dice images in a dictionary, and retrieve one using a random number when 
 from microbit import display, Image, accelerometer, sleep
 from random import randint
 
-dices = {  # dictionary of 5x5 dice images
+dice = {  # dictionary of 5x5 dice images
     1: '00000:00000:00900:00000:00000',
     2: '90000:00000:00000:00000:00009',
     3: '90000:00000:00900:00000:00009',
@@ -262,7 +262,7 @@ dices = {  # dictionary of 5x5 dice images
 
 while True:
     if accelerometer.was_gesture('shake'):  # if user has shaked micro:bit
-        display.show(Image(dices[randint(1, 6)]))  # get a image in random
+        display.show(Image(dice[randint(1, 6)]))  # get a image in random
 ```
 
 ## Fill LED Display
