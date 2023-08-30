@@ -12,6 +12,8 @@ Also there are a few projects:
 * Shake It game ([link](https://github.com/alankrantas/microbit-micropython-cookbook/tree/master/shake_it))
 * Simple micro:bit RC Car ([link](https://github.com/alankrantas/microbit-micropython-cookbook/tree/master/rc_car))
 
+---
+
 ## About micro:bit's MicroPython
 
 micro:bit's MicroPython is developed by Damien George. Like all other MicroPython variants, this is based on Python 3.4 and has most of the built-ins in a standard CPython 3.4. Of course, this also means features from newer Python and a lot of modules (built-in libraries) are unavaliable. There are also modules designed specifically for micro:bit or general microcontrollers. 
@@ -64,11 +66,11 @@ In a lot of examples you may see
 from microbit import *
 ```
 
-Import does not "read" a module or function into memory; what it really does is to add variables pointing to all the stuff under module "microbit". So you can use these names directly without writing ```microbit.something```.
+Which means to import everything under "microbit" so you can use them without using ```microbit.something```.
 
-But using * to import everything is still a bad practice. If you do this in standard Python, you might accidentally import things with conflicted names. 
+Import normally does not "read" a module or function into memory; what it really does is to add variables pointing to all the stuff under module "microbit". (The exceptios are complex third-party, C++ based packages which have to be loaded upon being imported, but there is no way to install these on micro:bits anyway.)
 
-Instead, you should always explicitly import what you need:
+But using * to import everything is still a bad practice. If you do this in standard Python, you might accidentally import things with conflicted names. Instead, you *should always* explicitly import what you need:
 
 ```python
 from microbit import pin0, display, sleep
@@ -91,7 +93,7 @@ gc.enable()  # enable automatic memory recycle
 gc.collect()  # force memory recycle
 ```
 
-## Classic Blinky (LED screen)
+### Classic Blinky (LED screen)
 
 ```python
 from microbit import display, Image, sleep
@@ -122,7 +124,7 @@ For both micro:bit V1/V2 you don't really need a resistor to protect the LED. Th
 
 ## Blinky LEDs Without Using Sleep
 
-Using the ```time``` module, the two LEDs on the LED screen would blink at different intervals.
+Using the ```time``` module to make the two LEDs on the LED screen blink at different intervals in the same loop.
 
 ```python
 from microbit import display
@@ -147,7 +149,7 @@ while True:
 
 ## A More Convenient Pin Class?
 
-Define a Pin class to repackage existing pin methods.
+Define a Pin class to wrap existing pin methods.
 
 ```python
 from microbit import pin1, pin2, sleep
@@ -179,7 +181,7 @@ class Pin:
         self.pin.set_pull(self.pin.PULL_UP)
         return not self.pin.read_digital()
         
-    def isTouched(self):
+    def isTouched(self):  # for pin_logo
         try:
             self.pin.set_pull(self.pin.NO_PULL)
             return self.pin.is_touched()
@@ -196,9 +198,15 @@ while True:
     sleep(50)
 ```
 
-Note: the external button needs to be "pulled up" with internal resistor so that micro:bit can read the input voltage change. Pin 5/11 (onboard button A/B) have their own internal pull-up resistors.
+See the following link for available pin functions:
 
-The external LED can be connected without a resistor, for the pin power output is 3.3V/6 mA only which is pretty harmless to any LEDs.
+* [micro:bit pins](https://makecode.microbit.org/device/pins)
+* [Edge Connector Pins](https://tech.microbit.org/hardware/edgeconnector/#edge-connector-pins)
+* [pin functions in MicroPython](https://microbit-micropython.readthedocs.io/en/v2-docs/pin.html#pin-functions)
+
+The class would set internal pull-up for reading button status with ```isPressed()```. The buttons can be connected to one pin and GND without physical resistors. The onboard A/B buttons already have built-in resistors.
+
+For controlling external LEDs, it is recommended to add a resistor (at least 220Ω for micro:bit V1 and 100Ω for V2) between the micro:bit pin and the LED anode leg.
 
 ## Simpler Alternate Pin Class
 
@@ -325,7 +333,7 @@ while True:
     sleep(50)
 ```
 
-The LED screen may flicker because ```read_light_level()``` uses LEDs themselves as light sensors (see [this video](https://www.youtube.com/watch?v=TKhCr-dQMBY)).
+The LED screen may flicker since ```read_light_level()``` uses LEDs themselves as light sensors (see [this video](https://www.youtube.com/watch?v=TKhCr-dQMBY) for explanation).
 
 ## Tiny Two-Digit Display
 
@@ -361,11 +369,11 @@ while True:
     sleep(1000)
 ```
 
-In showDigits(), parameter b is brightness (0~9) and fill_zero=True means numbers smaller than 10 will be displayed as 01, 02, 03...
+In ```showDigits()```, parameter b is brightness (0~9) and fill_zero=True means numbers smaller than 10 will be displayed as 01, 02, 03...
 
 ## Get Pitch and Roll Degrees
 
-This is also something exists in MakeCode but not MicroPython. Be noted that the results would be outputed in the REPL console.
+This is another functionality exists in MakeCode but not in MicroPython. Be noted that the results would be outputed in the REPL console and it's +-180 decrees instead of 360 degrees.
 
 ```python
 from microbit import accelerometer, sleep
@@ -390,6 +398,8 @@ while True:
 ```
 
 ## Servo Control
+
+Be noted that a SG90 hobby servo comsumes a few hundred mA and the 3.3V pin from micro:bit V1 (90 mA) is barely enough. Use an external 5V power instead, or use micro:bit V2 (200 mA at 3.3V pin).
 
 ```python
 from microbit import pin0, sleep
@@ -420,7 +430,7 @@ micro:bit V2 can output 190 mA from its 3V pin, which is enough for most hobby s
 
 ## NeoPixel Rainbow/Rotation Effect
 
-This code is based on Adafruit's example with adjustable brightness level. Change the pin0 to other pins if needed.
+This code is based on Adafruit's example with adjustable brightness level. Change the NeoPixel (WS281x) data pin from pin0 to other pins if needed. (You can power the LED strips with 3.3V pin, although V1 can output less power than V2. One NeoPixel LED at full power may comsume as much as 50 mA. Running in low light level is recommended.)
 
 ```python
 from microbit import pin0, sleep  # connect to pin 0
@@ -464,7 +474,7 @@ while True:
     sleep(led_delay)
 ```
 
-## Calcualte Fibonacci Sequence
+### Calcualte Fibonacci Sequence
 
 [Fibonacci sequence](https://en.wikipedia.org/wiki/Fibonacci_number)
 
@@ -483,7 +493,7 @@ print(f)
 display.scroll(f)
 ```
 
-Below is the recursive version, which is a lot slower and you may get ```RuntimeError: maximum recursion depth exceeded``` for a bigger number.
+Below is the recursive version, which is a lot slower and you may get ```RuntimeError: maximum recursion depth exceeded``` for a bigger number, especially in micro:bit V1.
 
 ```python
 from microbit import display
@@ -499,7 +509,7 @@ print(f)
 display.scroll(f)
 ```
 
-## Calcuate a List of Prime Numbers
+### Calcuate a List of Prime Numbers
 
 Prime numbers (except 2, 3) are either 6n - 1 or 6n + 1. So we check if a number of 6n - 1/6n + 1 can be divided with any existing primes in the list. If not, it is a prime number and can be added to the list.
 
@@ -525,7 +535,7 @@ for prime in primes:
 
 ## Morse Code Machine
 
-This allows you to enter your message into micro:bit and translate it to Morse code with the LED screen/buzzer. Go to the REPL mode and you'll see the promot.
+This allows you to enter your message into micro:bit and convert it to Morse code with the LED screen and buzzer. Go to the REPL mode and you'll see the promot.
 
 ```python
 from microbit import display, Image, set_volume, sleep
