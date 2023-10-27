@@ -16,15 +16,13 @@ Also there are a few projects:
 
 ## About micro:bit's MicroPython
 
-micro:bit's MicroPython is developed by Damien George. Like all other MicroPython variants, this is based on Python 3.4 and has most of the built-ins in a standard CPython 3.4. Of course, this also means features from newer Python and a lot of modules (built-in libraries) are unavaliable. There are also modules designed specifically for micro:bit or general microcontrollers. 
+micro:bit's MicroPython is developed by Damien George. Like all other MicroPython variants, it is based on Python 3.4 and has most of the built-ins in a standard CPython 3.4. Of course, this also means features from newer Python and a lot of modules (built-in libraries) are unavaliable (for example, no f-string and dictionaries would still store value pairs with random order). There are also modules designed specifically for micro:bit or general microcontrollers. 
 
-As MicroPython is a dynamic/interpreted language like CPython, it is slower than Arduino's C++ and requires more memory. It is very easily to run out of memory on micro:bit V1 (which has only 16 KB RAM). For micro:bit V2 (128 KB RAM) this is no longer a big problem.
-
-Nevertheless, Bluetooth support are still unavailable in both V1/V2 version.
+As MicroPython is a dynamic/interpreted language like CPython, it is slower than Arduino's C++ and requires more memory. If the firmware does not exist on the micro:bit, the official editor would install it as well. The user script cannot be too long and is very easy to run out of memory on micro:bit V1 (which has only 16 KB RAM). For micro:bit V2 (128 KB RAM) this is no longer a big problem. Nevertheless, Bluetooth support are still unavailable in both V1/V2 version.
 
 ## Ask Help From REPL
 
-REPL (Read-Evaluate-Print-Loop) or "Serial" in the official editor is a very useful testing tool. You may need to press Ctrl + C in the REPL screen to force the device enter REPL mode.
+REPL (Read-Evaluate-Print-Loop) or "Serial" in the official editor is a very useful testing tool, although it is in fact a standard Python feature. You may need to press Ctrl + C in the REPL screen to force the device enter REPL mode.
 
 Get some help:
 
@@ -32,7 +30,7 @@ Get some help:
 > help()
 ```
 
-List all modules:
+List all MicroPython modules:
 
 ```
 > help('modules')
@@ -68,7 +66,7 @@ from microbit import *
 
 Which means to import everything under "microbit" so you can use them without using ```microbit.something```.
 
-Import normally does not "read" a module or function into memory; what it really does is to add variables pointing to all the stuff under module "microbit". (The exceptios are complex third-party, C++ based packages which have to be loaded upon being imported, but there is no way to install these on micro:bits anyway.)
+Import normally does not "read" a module or function into memory; what it really does is to add variables pointing to all the stuff under module "microbit". (The exceptions are some C++ based Python packages which have to be loaded upon being imported, which are common among data science packages, but there is no way to install these on the micro:bits anyway.)
 
 But using * to import everything is still a bad practice. If you do this in standard Python, you might accidentally import things with conflicted names. Instead, you *should always* explicitly import what you need:
 
