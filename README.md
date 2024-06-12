@@ -1,4 +1,4 @@
-# micro:bit V2 MicroPython Cookbook (Updating)
+# micro:bit V2 MicroPython Cookbook
 
 ![1](https://user-images.githubusercontent.com/44191076/79871966-c0ae8b00-8417-11ea-8255-cbc681d12b8d.jpg)
 
@@ -16,13 +16,17 @@ Also there are a few projects:
 
 ## About micro:bit's MicroPython
 
-micro:bit's MicroPython is developed by Damien George. Like all other MicroPython variants, it is based on Python 3.4 and has most of the built-ins in a standard CPython 3.4. Of course, this also means features from newer Python and a lot of modules (built-in libraries) are unavaliable (for example, no f-string and dictionaries would still store value pairs with random order). There are also modules designed specifically for micro:bit or general microcontrollers. 
+micro:bit's MicroPython is developed by [Damien George](https://github.com/dpgeorge), after the initial effort to [bring Python onto micro:bit](https://ntoll.org/article/story-micropython-on-microbit/) failed. Theer are two other major variants: [MicroPython](https://micropython.org/) and Adafruit's [CircuitPython](https://circuitpython.org/).
 
-As MicroPython is a dynamic/interpreted language like CPython, it is slower than Arduino's C++ and requires more memory. If the firmware does not exist on the micro:bit, the official editor would install it as well. The user script cannot be too long and is very easy to run out of memory on micro:bit V1 (which has only 16 KB RAM). For micro:bit V2 (128 KB RAM) this is no longer a big problem. Nevertheless, Bluetooth support are still unavailable in both V1/V2 version.
+All MicroPython variants are based on standard Python or CPython `3.4`, while the other MicroPython versions incorporated a few features from newer Python. Unlike the ["fake" Python in the MakeCode editor](https://makecode.com/python), these are actual Python interpreters with full language syntax support, all basic built-ins along with a few special modules for the microcontrollers. On the other hand, most of the built-in modules are not available due to the hardware limitation. Not that we'll need them a lot for STEM education anyway.
+
+As Python is a dynamic interpreted language, it is slower than compiled languages like C++ and requires more memory, although on micro:bit V2s (with 128 KB RAM instead of 16 KB of V1s) this is no longer a big issue. With 512 KB flash onboard, you can actually write and store some text data as well!
+
+The firmware - the MicroPython interpreter - will be flashed onto the micro:bit when you upload the code for the first time. Actually, the firmware and the script will be [bundled together as a single .hex file](https://tech.microbit.org/software/hex-format/) to be uploaded into the [DAPLink interface](https://tech.microbit.org/software/daplink-interface/), which creates a fake "USB drive" on your computer. If the firmware is present, only the user script needs to be updated.
 
 ## Ask Help From REPL
 
-REPL (Read-Evaluate-Print-Loop) or "Serial" in the official editor is a very useful testing tool, although it is in fact a standard Python feature. You may need to press Ctrl + C in the REPL screen to force the device enter REPL mode.
+REPL (Read-Evaluate-Print-Loop) or "Serial" in the official editor is a very useful testing tool, although it is in fact simply the command line-like interface of the MicroPython interpreter, for with you can run one or a few lines of Python code at a time. And here's some basic things you can do with it.
 
 Get some help:
 
@@ -36,7 +40,7 @@ List all MicroPython modules:
 > help('modules')
 ```
 
-To see what's inside a module or submodule/function/attribute:
+To see what's inside a module or submodule/function/attribute (has to be imported first):
 
 ```
 > import microbit
@@ -82,13 +86,33 @@ from micropython import mem_info
 print(mem_info(1))
 ```
 
-You can also use garbage collection to free some memory:
+You can also use garbage collection to free some memory if possible:
 
 ```python
 import gc
 
 gc.enable()  # enable automatic memory recycle
 gc.collect()  # force memory recycle
+```
+
+## Write and Read Text Files
+
+Data can be preserved as files onboard until a new script is flashed onto it.
+
+Write a file:
+
+```python
+with open(r'/path/filename') as file:
+    for line in file:
+        print(line)    # read a line
+```
+
+Read a file:
+
+```python
+with open(r'/path/filename', 'w') as file:
+    for line in file:
+        file.write("line\n")    # write a line
 ```
 
 ### Classic Blinky (LED screen)
@@ -533,7 +557,7 @@ for prime in primes:
 
 ## Morse Code Machine
 
-This allows you to enter your message into micro:bit and convert it to Morse code with the LED screen and buzzer. Go to the REPL mode and you'll see the promot.
+This allows you to enter your message into micro:bit and convert it to Morse code with the LED screen and buzzer. Go to the REPL mode and you'll see the prompt.
 
 ```python
 from microbit import display, Image, set_volume, sleep
