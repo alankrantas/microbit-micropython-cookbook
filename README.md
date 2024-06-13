@@ -2,9 +2,10 @@
 
 ![1](https://user-images.githubusercontent.com/44191076/79871966-c0ae8b00-8417-11ea-8255-cbc681d12b8d.jpg)
 
-This is the collection of notes, tricks and experiments on BBC micro:bit V2 and MicroPython. You can use the [official editor](https://python.microbit.org/v/3).
+This is the collection of notes, tricks and experiments on BBC micro:bit V2 and MicroPython. Many examples work on micro:bit V1 but I no longer test on them.
 
-See also [BBC micro:bit V2 MicroPython documentation](https://microbit-micropython.readthedocs.io/en/v2-docs/index.html)
+- [Official micro:bit Python editor](https://python.microbit.org/v/3)
+- [BBC micro:bit V2 MicroPython documentation](https://microbit-micropython.readthedocs.io/en/v2-docs/index.html)
 
 Also there are a few projects:
 
@@ -26,15 +27,17 @@ The firmware - the MicroPython interpreter - will be flashed onto the micro:bit 
 
 ## Ask Help From REPL
 
-REPL (Read-Evaluate-Print-Loop) or "Serial" in the official editor is a very useful testing tool, although it is in fact simply the command line-like interface of the MicroPython interpreter, for with you can run one or a few lines of Python code at a time. And here's some basic things you can do with it.
+REPL (Read-Evaluate-Print-Loop) or "serial" in the official editor is a very useful tool, although it is in fact the command line interface of the MicroPython interpreter, for witch you can test an expression (like `1 + 1`) or a statement (like `print(1 + 1)`). And here's some basic things you can do with it.
 
-Get some help:
+In the official Python editor, first connect your micro:bit, then open "serial". If there are code running onboard and the interpreter does not respond, press `Ctrl` + `C` to force the code to stop. (You can also press `Ctrl` + `D` to have the board restart and run the code again.)
+
+Get basic help information from REPL:
 
 ```
 > help()
 ```
 
-List all MicroPython modules:
+List all built-in MicroPython modules:
 
 ```
 > help('modules')
@@ -59,6 +62,12 @@ Try to type these in the REPL:
 > import antigravity
 > import love
 ```
+
+<details>
+    <summary>Reference</summary>
+    - `import this` prints out "The Zen of MicroPython", which is a short version of [The Zen of Python](https://peps.python.org/pep-0020/) in CPython.
+    - `import antigravity` prints out a text version of [this comic about Python 2](https://xkcd.com/353/); in CPython it will directly open the URL of that comic.
+</details>
 
 ## Import * is a Bad Idea
 
@@ -97,22 +106,41 @@ gc.collect()  # force memory recycle
 
 ## Write and Read Text Files
 
-Data can be preserved as files onboard until a new script is flashed onto it.
+Data can be preserved as files onboard until a new script is flashed onto it, although there is no way to download files
 
-Write a file:
+Write several lines into a file (will be created if not exist):
 
 ```python
-with open(r'/path/filename') as file:
-    for line in file:
-        print(line)    # read a line
+data = [
+    'line 1',
+    'line 2',
+    'line 3'
+]
+
+with open(r'file.txt', 'w') as file:
+    file.write('\n'.join(data))
 ```
 
-Read a file:
+Read content of a file:
 
 ```python
-with open(r'/path/filename', 'w') as file:
-    for line in file:
-        file.write("line\n")    # write a line
+content = ''
+with open(r'file.txt') as file:
+    content = file.read()
+print(content)
+```
+
+List files using REPL:
+
+```
+>>> import os
+>>> os.listdir()
+```
+
+Delete file using REPL:
+
+```
+>>> os.remove('file.txt')
 ```
 
 ### Classic Blinky (LED screen)
