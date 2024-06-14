@@ -17,7 +17,7 @@ Also there are a few projects:
 
 ## About micro:bit's MicroPython
 
-micro:bit's MicroPython is developed by [Damien George](https://github.com/dpgeorge), after the initial effort to [bring Python onto micro:bit](https://ntoll.org/article/story-micropython-on-microbit/) failed. Theer are two other major variants: [MicroPython](https://micropython.org/) and Adafruit's [CircuitPython](https://circuitpython.org/).
+micro:bit's MicroPython is developed by [Damien George](https://github.com/dpgeorge), after the initial effort to [bring Python onto micro:bit](https://ntoll.org/article/story-micropython-on-microbit/) failed. Damien George developed the original [MicroPython](https://micropython.org/) in 2013, which also has a derived version: Adafruit's [CircuitPython](https://circuitpython.org/).
 
 All MicroPython variants are based on standard Python or CPython `3.4`, while the other MicroPython versions incorporated a few features from newer Python. Unlike the ["fake" Python in the MakeCode editor](https://makecode.com/python), these are actual Python interpreters with full language syntax support, all basic built-ins along with a few special modules for the microcontrollers. On the other hand, most of the built-in modules are not available due to the hardware limitation. Not that we'll need them a lot for STEM education anyway.
 
@@ -95,7 +95,7 @@ from micropython import mem_info
 print(mem_info(1))
 ```
 
-You can also use garbage collection to free some memory if possible:
+You can also use garbage collection to free some memory if possible (it's not magic after all):
 
 ```python
 import gc
@@ -159,6 +159,8 @@ while True:
 
 This version controls an external LED connected between pin 0 and GND and uses ```time.sleep()``` module instead of ```microbit.sleep()```.
 
+Most LEDs are anode so connect the longer leg to [micro:bit's pin 0](https://makecode.microbit.org/device/pins) and the shorter leg to GND pin, either using crocodile clip wires or a edge connector, two jumper wires and a breadboard.
+
 ```python
 from microbit import pin0
 import time
@@ -170,11 +172,11 @@ while True:
     time.sleep(0.5)
 ```
 
-For both micro:bit V1/V2 you don't really need a resistor to protect the LED. The voltage and current from any pins (except the 3V pin) are low enough.
+Note: for both micro:bit V1/V2 you don't really need a resistor to protect the LED. The voltage and current from any pins (except the 3V pin) are low enough to cause real harms.
 
 ## Blinky LEDs Without Using Sleep
 
-Using the ```time``` module to make the two LEDs on the LED screen blink at different intervals in the same loop.
+Using the ```time``` module to make two LEDs on the LED screen blink asynchronously at different intervals in the same loop.
 
 ```python
 from microbit import display
