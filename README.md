@@ -65,8 +65,10 @@ Try to type these in the REPL:
 
 <details>
     <summary>Reference</summary>
-    - `import this` prints out "The Zen of MicroPython", which is a short version of [The Zen of Python](https://peps.python.org/pep-0020/) in CPython.
-    - `import antigravity` prints out a text version of [this comic about Python 2](https://xkcd.com/353/); in CPython it will directly open the URL of that comic.
+
+- `import this` prints out "The Zen of MicroPython", which is a short version of [The Zen of Python](https://peps.python.org/pep-0020/) in CPython.
+- `import antigravity` prints out a text version of [this comic about Python 2](https://xkcd.com/353/); in CPython it will directly open the URL of that comic.
+    
 </details>
 
 ## Import * is a Bad Idea
@@ -299,7 +301,7 @@ def translate(value, leftMin, leftMax, rightMin, rightMax):
 
 while True:
     lightLevel = display.read_light_level()
-    print(translate(lightLevel, 0, 255, 0, 1023))
+    print(translate(lightLevel, 0, 255, 0, 1023))  # map value range 0-255 to 0-1023
     sleep(100)
 ```
 
